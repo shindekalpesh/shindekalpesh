@@ -19,7 +19,7 @@ Here are some ideas to get you started:
 - 🌱 I’m currently learning Web Scraping using Python
 - 💬 𝙰𝚜𝚔 𝙼𝚎 𝙰𝚋𝚘𝚞𝚝 𝙰𝚗𝚢𝚝𝚑𝚒𝚗𝚐 here ! 𝙸 𝚊𝚖 𝚑𝚊𝚙𝚙𝚢 𝚝𝚘 𝚑𝚎𝚕𝚙.
 - 📫 How to reach me: 
-1. Email: [kalpeshtheofficial@gmail.com](url)
+1. Email: [mailto:kalpeshtheofficial@gmail.com](url)
 2. LinkedIn: [https://www.linkedin.com/in/kalpeshshinde](url)
 - 😄 Pronouns: He/Him/His
 - ⚡ Fun fact: I like Competitive First-Person-Shooter Games: Counter Strike Global Offensive <3 
