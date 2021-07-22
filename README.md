@@ -15,3 +15,11 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: ...
 -->
 
+🔭 I'am Working on self-development, as always :D
+🌱 I’m currently learning Web Scraping using Python
+💬 𝙰𝚜𝚔 𝙼𝚎 𝙰𝚋𝚘𝚞𝚝 𝙰𝚗𝚢𝚝𝚑𝚒𝚗𝚐 here ! 𝙸 𝚊𝚖 𝚑𝚊𝚙𝚙𝚢 𝚝𝚘 𝚑𝚎𝚕𝚙.
+😄 Pronouns: He/Him/His
+⚡ Fun fact: I like Competitive First-Person-Shooter Games: Counter Strike Global Offensive <3 
+
+My skills 🚀
+    
