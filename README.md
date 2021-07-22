@@ -25,5 +25,7 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: I like Competitive First-Person-Shooter Games: Counter Strike Global Offensive <3 
 
 My skills 🚀
+In the words of Harvey Specter from TV Series SUITS:
 
+> It is going to happen, because I AM GOING TO MAKE IT HAPPEN!
     
