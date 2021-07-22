@@ -30,4 +30,7 @@ Here are some ideas to get you started:
 - ⚡ Fun fact: I like Competitive First-Person-Shooter Games: Counter Strike Global Offensive <3 
 
 My skills 🚀
+- Python (Pandas, NumPy, Sklearn, Matplotlib, Seaborn)
+- Business Intelligence Tool: Tableau
+- Database: SQL
 
