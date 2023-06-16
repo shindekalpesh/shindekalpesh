@@ -4,7 +4,7 @@ In the words of Harvey Specter from TV Series SUITS:
 > It is going to happen, because I AM GOING TO MAKE IT HAPPEN!
     
 <h1 align="center">Hi 👋, I'm KALPESH SHINDE</h1>
-<h3 align="center">Data Scientist with 1.8 years of experience. Proficient in Python, SQL and Tableau.</h3>
+<h3 align="center">Data Scientist with total 2.7 years of experience working in the Data Science domain using Python, SQL, Power Query, Power BI, and Tableau.</h3>
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=shindekalpesh&label=Profile%20views&color=0e75b6&style=flat" alt="shindekalpesh" /> </p>
 
