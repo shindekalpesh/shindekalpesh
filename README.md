@@ -12,17 +12,17 @@ In the words of Harvey Specter from TV Series SUITS:
 
 - 🔭 I’m currently working on **myself.**
 
-- 🌱 I’m currently learning **MLOPS**
+- 🌱 I’m currently learning **DE & more about life!**
 
-- 👯 I’m looking to collaborate on **Data Science Projects**
+- 👯 I’m looking to collaborate on **Data Engineering Projects**
 
 - 👨‍💻 All of my projects are available at [[www.kalpeshshinde.ml](https://shindekalpesh.github.io/)]
 
-- 💬 Discussions that I enjoy: **Core Engg Problems**
+- 💬 Discussions that I enjoy: **Core Engg Problems, Sports Cars & Bikes**
 
 - 📫 How to reach me **kalpeshtheofficial@gmail.com**
 
-- 📄 Know about my professional experiences [https://kalpeshshinde.ml/files/cv.pdf](https://kalpeshshinde.ml/files/cv.pdf)
+- 📄 Know about my professional experiences [[https://kalpeshshinde.ml/files/cv.pdf](https://shindekalpesh.github.io/files/cv.pdf)]
 
 - ⚡ Fun fact **I like Competitive First-Person-Shooter Games: Counter Strike Global Offensive**
 
