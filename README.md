@@ -3,8 +3,8 @@ In the words of Harvey Specter from TV Series SUITS:
 
 > It is going to happen, because I AM GOING TO MAKE IT HAPPEN!
     
-<h1 align="center">Hi 👋, I'm KALPESH SHINDE</h1>
-<h3 align="center">An Information Technology Engineer with total 2.7 years of experience working in the Data Science domain using Python, SQL, Power Query, Power BI, and Tableau for solving complex business problems.</h3>
+<h1 align="center">Hi 👋, I'm Kalpesh Shinde</h1>
+<h3 align="center">An Information Technology Engineer with 3+ years of experience working in the Data Science domain using Python, SQL, Power Query, Power BI, and Tableau for solving complex business problems.</h3>
 
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=shindekalpesh&label=Profile%20views&color=0e75b6&style=flat" alt="shindekalpesh" /> </p>
 
@@ -16,9 +16,9 @@ In the words of Harvey Specter from TV Series SUITS:
 
 - 👯 I’m looking to collaborate on **Data Science Projects**
 
-- 👨‍💻 All of my projects are available at [www.kalpeshshinde.ml](www.kalpeshshinde.ml)
+- 👨‍💻 All of my projects are available at [[www.kalpeshshinde.ml](https://shindekalpesh.github.io/)]
 
-- 💬 Ask me about **Data Science Techniques**
+- 💬 Discussions that I enjoy: **Core Engg Problems**
 
 - 📫 How to reach me **kalpeshtheofficial@gmail.com**
 
