@@ -12,7 +12,7 @@
   --bg:#F6F7F9; --panel:#FFFFFF;
   --ink:#16232E; --ink-2:#4A5A6A; --ink-3:#7E8B98;
   --line:#E2E6EA; --line-2:#EEF1F3;
-  --blue-100:#E9F0F5; --orange-100:#FCEEDD;
+  --blue-100:#E9F0F5; --orange-100:#FCEEDD; --red:#9C2B1F; --red-100:#FBEAE7;
   --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box}
@@ -23,6 +23,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 .rail nav a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent}
 .rail nav a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
 .rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
+.rail .who strong{color:#fff;display:block;margin-top:2px}
+.rail .logout{display:block;margin:10px 22px 0;font-size:12.5px;color:#93A8BC;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans)}
 
 .workspace{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
 .sectionnav{border-right:1px solid var(--line);padding:28px 14px;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--panel)}
@@ -95,6 +97,9 @@ textarea{resize:vertical;min-height:60px}
 .panelhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}
 .panelhead .sub{margin-bottom:0}
 .dot.partial{border-color:var(--orange);background:linear-gradient(90deg,var(--orange) 50%,transparent 50%)}
+.field.field-flagged{background:var(--red-100);border-radius:8px;margin:0 -14px;padding-left:14px;padding-right:14px}
+.flagged-input{border-color:var(--red)!important;background:#fff}
+.flagcount{color:var(--red);font-weight:500}
 .nm{flex:1;min-width:0}
 .cnt{margin-left:auto;font-size:11.5px;color:var(--ink-3);font-weight:500}
 .sectionnav button.current .cnt{color:var(--blue)}
@@ -106,10 +111,14 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
   <aside class="rail">
     <div class="mark">IR-WORKSHOP / PL</div>
     <nav>
+      <a href="executive-dashboard.html" id="dashLink" style="display:none">Executive Dashboard</a>
       <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
-      <a href="critical-tasks.html">Critical tasks</a>
+      <a href="critical-parameters.html">Critical Parameters</a>
     </nav>
-    <div class="who">Logged in as<br><strong style="color:#fff" id="userName">R. Sharma · IS</strong></div>
+    <div class="who">
+      Logged in as<strong id="userName">—</strong>
+      <button class="logout" onclick="logout()">Sign out</button>
+    </div>
   </aside>
 
   <div class="workspace">
@@ -123,7 +132,7 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
 
     <main>
       <div class="topbar">
-        <div class="topline">Section <span id="secnum">1</span> of <span id="sectotal">8</span> · <span id="doneCount">0</span> complete</div>
+        <div class="topline">Section <span id="secnum">1</span> of <span id="sectotal">8</span> · <span id="doneCount">0</span> complete<span id="flagLine"></span></div>
         <div id="sheetExport"></div>
       </div>
       <div class="progresswrap">
@@ -138,14 +147,14 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
         <div class="field"><div class="label">Compressor 1.1<span class="code">K-33 · amp</span></div><input type="number" placeholder="0.0"></div>
         <div class="field"><div class="label">Blower motor 1.1<span class="code">K-26 · amp</span></div><input type="number" placeholder="0.0"></div>
         <div class="field"><div class="label">Compressor 1.2<span class="code">K-34 · amp</span></div><input type="number" placeholder="0.0"></div>
-        <div class="field"><div class="label">RBC contactor<span class="tag">flagged</span><span class="code">K-30 · amp</span></div><input type="number" placeholder="0.0"></div>
+        <div class="field"><div class="label">RBC contactor<span class="tag">Mission-critical</span><span class="code">K-30 · amp</span></div><input type="number" placeholder="0.0"></div>
         <div class="field"><div class="label">Heater PP 2.1<span class="code">K-40 · amp</span></div><input type="number" placeholder="0.0"></div>
       </div>
 
       <div class="panel" data-section="1">
         <h2>Insulation resistance test</h2>
         <p class="sub">Value observed per voltage class.</p>
-        <div class="field"><div class="label">750V circuit<span class="tag">flagged</span><span class="code">min. 05 MΩ</span></div><input type="number" placeholder="MΩ"></div>
+        <div class="field"><div class="label">750V circuit<span class="tag">Mission-critical</span><span class="code">min. 05 MΩ</span></div><input type="number" placeholder="MΩ"></div>
         <div class="field"><div class="label">415V circuit<span class="code">min. 03 MΩ</span></div><input type="number" placeholder="MΩ"></div>
         <div class="field"><div class="label">230V circuit<span class="code">min. 02 MΩ</span></div><input type="number" placeholder="MΩ"></div>
         <div class="field"><div class="label">110V circuit<span class="code">min. 02 MΩ</span></div><input type="number" placeholder="MΩ"></div>
@@ -166,11 +175,11 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
       <div class="panel" data-section="3">
         <h2>Detailed technical verification</h2>
         <p class="sub">Mixed make/model text fields and status checks.</p>
-        <div class="field"><div class="label">HP cut-out, PP side<span class="tag">flagged</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">LP cut-out, NPP side<span class="tag">flagged</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Earthing device<span class="tag">flagged</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
+        <div class="field"><div class="label">HP cut-out, PP side<span class="tag">Mission-critical</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">LP cut-out, NPP side<span class="tag">Mission-critical</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Earthing device<span class="tag">Mission-critical</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
         <div class="field"><div class="label">Power panel make</div><input type="text" placeholder="Manufacturer name"></div>
-        <div class="field"><div class="label">EBC cum RBC<span class="tag">flagged</span></div><select><option>Select</option><option>Working</option><option>Not working</option></select></div>
+        <div class="field"><div class="label">EBC cum RBC<span class="tag">Mission-critical</span></div><select><option>Select</option><option>Working</option><option>Not working</option></select></div>
       </div>
 
       <div class="panel" data-section="4">
@@ -201,7 +210,7 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
       <div class="panel" data-section="7">
         <h2>Earthing & deficiency declaration</h2>
         <p class="sub">Final coach-level checks before sign-off.</p>
-        <div class="field"><div class="label">Shut-off valve / live terminal<span class="tag">flagged</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
+        <div class="field"><div class="label">Shut-off valve / live terminal<span class="tag">Mission-critical</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
         <div class="field fullrow">
           <div class="label">Any other deficiency</div>
           <textarea placeholder="Describe the issue, if any"></textarea>
@@ -265,6 +274,17 @@ function render() {
     $("cnt-" + i).textContent = s.n + "/" + s.total;
     if (s.status === "done") done++;
   });
+  let flaggedCount = 0;
+  panels.forEach((p, i) => controls(i).forEach((c, k) => {
+    if (FORM_FIELDS[i][k] === "Any other deficiency") return;
+    const flagged = paramState(i, k, c.value.trim()) === "flagged";
+    c.classList.toggle("flagged-input", flagged);
+    c.closest(".field").classList.toggle("field-flagged", flagged);
+    if (flagged) flaggedCount++;
+  }));
+  $("flagLine").textContent = flaggedCount ? ` · ${flaggedCount} flagged` : "";
+  $("flagLine").className = flaggedCount ? "flagcount" : "";
+
   const pct = Math.round(done / sections.length * 100);
   $("secnum").textContent = current + 1;
   $("sectotal").textContent = sections.length;
@@ -323,13 +343,14 @@ function exportDropdown(label, solid, onPick) {
   return wrap;
 }
 document.addEventListener("click", closeMenus);
-panels.forEach((p, i) => {                       // per-section Export button next to each section title
+const canExport = getUser()?.is_mgmt_staff;      // export is an SSE / HOD tool — not relevant to inspection staff filling the form
+panels.forEach((p, i) => {                       // per-section Export button next to each section title (SSE / HOD only)
   const h2 = p.querySelector("h2"), sub = p.querySelector(".sub"), head = document.createElement("div"), left = document.createElement("div");
   head.className = "panelhead"; p.insertBefore(head, h2);
   left.appendChild(h2); left.appendChild(sub); head.appendChild(left);
-  head.appendChild(exportDropdown("Export section", false, f => exportSection(i, f)));
+  if (canExport) head.appendChild(exportDropdown("Export section", false, f => exportSection(i, f)));
 });
-$("sheetExport").appendChild(exportDropdown("Export entire sheet", true, exportSheet));
+if (canExport) $("sheetExport").appendChild(exportDropdown("Export entire sheet", true, exportSheet));
 
 // ── Demo wiring ──────────────────────────────
 requireAuth();
@@ -342,23 +363,12 @@ const readOnly = params.get("readonly") === "1" || visit?.status === "SUBMITTED"
 $("userName").textContent = (me?.full_name || "") + (me?.is_mgmt_staff ? " · SSE / HOD" : " · IS");
 $("summaryLink").href = me?.is_mgmt_staff ? MGMT_HOME : IS_HOME;
 $("summaryLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
+$("dashLink").style.display = me?.is_mgmt_staff ? "" : "none";
 
-const DEMO_FILL = {   // sample readings shown for finished sections
-  0: { "Pump 1.1": 4.2, "Compressor 1.1": 11.8, "Blower motor 1.1": 3.6, "Compressor 1.2": 12.1, "RBC contactor": 8.7, "Heater PP 2.1": 9.4 },
-  1: { "750V circuit": 3.1, "415V circuit": 4.8, "230V circuit": 3.2, "110V circuit": 2.6, "24V circuit": 1.9 },
-  2: { "MMR": "OK", "Contactors": "OK", "Deep freezer": "OK", "Return filter": "OK", "Tube light (S)": "OK", "Earthing": "OK" },
-  3: { "HP cut-out, PP side": "OK", "LP cut-out, NPP side": "Not OK", "Earthing device": "Earthed", "Power panel make": "Medha", "EBC cum RBC": "Working" },
-  4: { "Blower heater modification": "Already done", "200VA transformer modification": "Already done", "Rodent protection (mouse plate)": "To be done" },
-  5: { "Rotary switch position": "3", "Coach temp at cut-in": 34, "Coach temp at cut-out": 24, "Time taken": 42 },
-  6: { "Make of DG set, Set A": "Cummins", "Diesel tank status, Set A": "Full", "Battery cell-end connections, Set A": "Disconnected" },
-  7: { "Shut-off valve / live terminal": "Earthed", "Any other deficiency": "None noted" }
-};
-function fillSection(i) {
-  panels[i].querySelectorAll(".field").forEach(f => {
-    const lab = f.querySelector(".label"), key = lab && lab.firstChild ? lab.firstChild.textContent.trim() : "";
-    if (!(key in DEMO_FILL[i]) || (visit.id === 1 && key === "RBC contactor")) return;   // 04512: RBC reading still to be entered
-    f.querySelector("input,select,textarea").value = String(DEMO_FILL[i][key]);
-  });
+function fillSection(i) {   // used only when opening the seeded demo coach with nothing saved yet
+  const entry = demoEntryFor(visit.id);
+  if (!entry) return;
+  controls(i).forEach((c, k) => { if (entry[i][k]) c.value = entry[i][k]; });
 }
 if (visit) {
   coachNo = visit.coach_number;

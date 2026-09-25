@@ -81,7 +81,7 @@ td.act .btn{padding:7px 16px}
     <div class="mark">IR-WORKSHOP / PL</div>
     <nav>
       <a class="active" href="is-summary.html">My assignments</a>
-      <a href="critical-tasks.html">Critical tasks</a>
+      <a href="critical-parameters.html">Critical Parameters</a>
     </nav>
     <div class="who">Logged in as<strong id="userName">—</strong>
       <button class="logout" onclick="logout()">Sign out</button></div>
@@ -210,7 +210,6 @@ $("tabs").addEventListener("click", e => {
 $("q").addEventListener("input", refresh);
 
 function toast(m){ const t=$("toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2400); }
-function logout(){ clearSession(); location.href = LOGIN_PAGE; }
 
 loadVisits();
 setInterval(loadVisits, 60000);

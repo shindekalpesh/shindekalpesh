@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Critical tasks — Coach 04512</title>
+<title>Critical Parameters — Coach 04512</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,6 +23,8 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 .rail nav a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent}
 .rail nav a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
 .rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
+.rail .who strong{color:#fff;display:block;margin-top:2px}
+.rail .logout{display:block;margin:10px 22px 0;font-size:12.5px;color:#93A8BC;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans)}
 
 main{padding:32px 46px 60px;max-width:720px}
 h1{font-size:21px;font-weight:600;margin:0}
@@ -30,11 +32,12 @@ h1{font-size:21px;font-weight:600;margin:0}
 .meta{color:var(--ink-3);font-size:13.5px;margin:4px 0 8px}
 .note{color:var(--ink-3);font-size:13px;margin:0 0 26px;max-width:56ch}
 
-.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.tally{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+@media (max-width:820px){.tally{grid-template-columns:repeat(2,1fr)}}
 .tally .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
 .tally .num{font-size:27px;font-weight:600;line-height:1;color:var(--navy)}
 .tally .lbl{font-size:12.5px;color:var(--ink-3);font-weight:500;margin-top:5px}
-.tally .stat.warn .num{color:#C9822E}
+.tally .stat.warn .num{color:var(--red)}
 
 .list{display:flex;flex-direction:column;gap:8px}
 .row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:10px;border:1px solid var(--line);background:var(--panel)}
@@ -70,6 +73,13 @@ h1{font-size:21px;font-weight:600;margin:0}
 .pill2.p-bad{background:#FBEAE7;color:#9C2B1F}
 .pill2.p-neutral{background:var(--blue-100);color:var(--blue)}
 .pill2.p-pending{background:var(--orange-100);color:#8A5410;font-weight:500;font-style:italic}
+.card2.c-info{border-left-color:var(--blue)}
+.sectionhead{display:flex;align-items:baseline;gap:10px;margin:26px 0 12px}
+.sectionhead:first-of-type{margin-top:0}
+.sectionhead h2{font-size:15px;font-weight:600}
+.sectionhead .count{font-size:12.5px;color:var(--ink-3)}
+.emptynote{color:var(--ink-3);font-size:13.5px;font-style:italic;padding:14px 4px}
+.tally .stat.warn{border-color:#EFD2B8}
 </style>
 </head>
 <body>
@@ -77,14 +87,18 @@ h1{font-size:21px;font-weight:600;margin:0}
   <aside class="rail">
     <div class="mark">IR-WORKSHOP / PL</div>
     <nav>
+      <a href="executive-dashboard.html" id="dashLink" style="display:none">Executive Dashboard</a>
       <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
-      <a class="active" href="critical-tasks.html">Critical tasks</a>
+      <a class="active" href="critical-parameters.html">Critical Parameters</a>
     </nav>
-    <div class="who">Logged in as<br><strong style="color:#fff" id="userName">R. Sharma · IS</strong></div>
+    <div class="who">
+      Logged in as<strong id="userName">—</strong>
+      <button class="logout" onclick="logout()">Sign out</button>
+    </div>
   </aside>
   <main>
-    <h1>Critical tasks</h1>
-    <p class="note">Parameters flagged for priority visibility. Values are shown as entered — no automatic pass/fail is applied at this stage.</p>
+    <h1>Critical Parameters</h1>
+    <p class="note">Mission-critical parameters are always shown here, whatever the reading. Anything else currently outside its defined range is listed separately, below.</p>
 
     <div class="coachcard">
       <div class="cc-avatar" id="ccAvatar">—</div>
@@ -104,12 +118,17 @@ h1{font-size:21px;font-weight:600;margin:0}
     </div>
 
     <div class="tally">
-      <div class="stat"><div class="num" id="tFlagged">—</div><div class="lbl">flagged parameters</div></div>
+      <div class="stat"><div class="num" id="tTotal">—</div><div class="lbl">mission-critical parameters</div></div>
       <div class="stat"><div class="num" id="tEntered">—</div><div class="lbl">entered</div></div>
       <div class="stat" id="tPendingCard"><div class="num" id="tPending">—</div><div class="lbl">not yet entered</div></div>
+      <div class="stat" id="tFlagCard"><div class="num" id="tFlagged">—</div><div class="lbl">currently flagged</div></div>
     </div>
 
-    <div class="list" id="list"></div>
+    <div class="sectionhead"><h2>Mission-critical parameters</h2><span class="count" id="mcCount"></span></div>
+    <div class="list" id="mcList"></div>
+
+    <div class="sectionhead"><h2>Other flagged parameters</h2><span class="count" id="otherCount"></span></div>
+    <div class="list" id="otherList"></div>
   </main>
 </div>
 <script src="api.js"></script>
@@ -120,23 +139,32 @@ const me = getUser();
 document.getElementById("userName").textContent = (me?.full_name || "") + (me?.is_mgmt_staff ? " · SSE / HOD" : " · IS");
 document.getElementById("summaryLink").href = me?.is_mgmt_staff ? MGMT_HOME : IS_HOME;
 document.getElementById("summaryLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
+document.getElementById("dashLink").style.display = me?.is_mgmt_staff ? "" : "none";
 const params = new URLSearchParams(location.search);
 const visit = getVisit(+params.get("visit_id") || 1);   // opened directly: shows coach 04512, same as is-main-entry's default
 
 function initials(name) { return (name || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(); }
 function statusOf(v) { return v.status === "SUBMITTED" ? "Submitted" : v.status === "ASSIGNED" ? "Not started" : "In progress"; }
-function pillClass(v) {
-  const s = (v || "").toLowerCase();
-  if (["ok", "earthed", "working"].includes(s)) return "p-ok";
-  if (["not ok", "not earthed", "not working"].includes(s)) return "p-bad";
-  if (!v) return "p-pending";
-  return "p-neutral";
+function pillClass(state) { return { flagged: "p-bad", ok: "p-ok", unrated: "p-neutral", pending: "p-pending" }[state]; }
+function cardClass(state) { return { flagged: "c-bad", ok: "c-ok", unrated: "c-info", pending: "c-pending" }[state]; }
+function valueText(f) { return f.value || "Not yet entered"; }
+
+function card(f, tagLabel) {
+  return `<div class="card2 ${cardClass(f.state || (f.value ? "flagged" : "pending"))}">
+      <div>
+        <div class="name">${esc(f.label)}<span class="tag">${tagLabel}</span></div>
+        <div class="section">${esc(f.sectionName)}${f.sub ? " · " + esc(f.sub) : ""}</div>
+      </div>
+      <div class="pill2 ${pillClass(f.state || "flagged")}">${esc(valueText(f))}</div>
+    </div>`;
 }
 
 if (!visit) {
   document.querySelector(".coachcard").style.display = "none";
   document.querySelector(".tally").style.display = "none";
-  document.getElementById("list").innerHTML = '<div class="card2"><div class="value empty">No critical tasks yet.</div></div>';
+  document.querySelectorAll(".sectionhead").forEach(h => h.style.display = "none");
+  document.getElementById("mcList").innerHTML = '<div class="card2"><div class="value empty">No critical tasks yet.</div></div>';
+  document.getElementById("otherList").innerHTML = "";
 } else {
   document.getElementById("ccAvatar").textContent = initials(visit.assigned_to_name);
   document.getElementById("ccCoach").textContent = "Coach " + visit.coach_number;
@@ -146,21 +174,23 @@ if (!visit) {
   document.getElementById("ccInspector").textContent = visit.assigned_to_name || "Unassigned";
   document.getElementById("ccSections").textContent = (visit.sections_completed ?? 0) + " of " + (visit.sections_total || 8);
 
-  const flagged = flaggedValues(visit);
-  const entered = flagged.filter(f => f.value).length;
-  document.getElementById("tFlagged").textContent = flagged.length;
+  const mc = missionCriticalValues(visit);
+  const entered = mc.filter(f => f.value).length;
+  const flaggedMc = mc.filter(f => f.state === "flagged").length;
+  document.getElementById("tTotal").textContent = mc.length;
   document.getElementById("tEntered").textContent = entered;
-  document.getElementById("tPending").textContent = flagged.length - entered;
-  document.getElementById("tPendingCard").classList.toggle("warn", flagged.length - entered > 0);
+  document.getElementById("tPending").textContent = mc.length - entered;
+  document.getElementById("tFlagged").textContent = flaggedMc;
+  document.getElementById("tPendingCard").classList.toggle("warn", mc.length - entered > 0);
+  document.getElementById("tFlagCard").classList.toggle("warn", flaggedMc > 0);
+  document.getElementById("mcCount").textContent = mc.length + " watched";
+  document.getElementById("mcList").innerHTML = mc.map(f => card(f, "Mission-critical")).join("");
 
-  document.getElementById("list").innerHTML = flagged.map(f => `
-    <div class="card2 ${f.value ? (pillClass(f.value) === "p-bad" ? "c-bad" : "c-ok") : "c-pending"}">
-      <div>
-        <div class="name">${esc(f.label)}<span class="tag">flagged</span></div>
-        <div class="section">${esc(f.sectionName)}${f.sub ? " · " + esc(f.sub) : ""}</div>
-      </div>
-      <div class="pill2 ${pillClass(f.value)}">${esc(f.value || "Not yet entered")}</div>
-    </div>`).join("");
+  const other = flaggedValues(visit).filter(f => !f.isMissionCritical);
+  document.getElementById("otherCount").textContent = other.length + " found";
+  document.getElementById("otherList").innerHTML = other.length
+    ? other.map(f => card({ ...f, state: "flagged" }, "Flagged")).join("")
+    : '<p class="emptynote">Nothing else is currently out of range.</p>';
 }
 </script>
 </body>

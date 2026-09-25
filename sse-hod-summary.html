@@ -68,6 +68,7 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
 .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
 .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
 .chart-card h3{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:16px}
+.chart-card .chartbox{height:220px}
 /* Modal */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
 .modal-bg.show{display:flex}
@@ -119,8 +120,9 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
   <aside class="rail">
     <div class="mark">IR-WORKSHOP / PL</div>
     <nav>
+      <a href="executive-dashboard.html">Executive Dashboard</a>
       <a class="active" href="sse-hod-summary.html">Summary</a>
-      <a href="critical-tasks.html">Critical tasks</a>
+      <a href="critical-parameters.html">Critical Parameters</a>
     </nav>
     <div class="who">
       Logged in as<strong id="userName">—</strong>
@@ -217,11 +219,11 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
     <div class="charts">
       <div class="chart-card">
         <h3>Assignments by coach type</h3>
-        <canvas id="chartType"></canvas>
+        <div class="chartbox"><canvas id="chartType"></canvas></div>
       </div>
       <div class="chart-card">
         <h3>Submitted vs In Progress</h3>
-        <canvas id="chartStatus"></canvas>
+        <div class="chartbox"><canvas id="chartStatus"></canvas></div>
       </div>
     </div>
   </main>
@@ -272,7 +274,7 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
     </div>
     <form id="userForm" novalidate autocomplete="off" onsubmit="submitStaffUser(event)">
       <label for="uId">Staff ID *</label>
-      <input id="uId" name="staff_id" type="text" placeholder="e.g. RS-2214" maxlength="12" spellcheck="false" autocomplete="off">
+      <input id="uId" name="staff_id" type="text" placeholder="e.g. IS-1002" maxlength="12" spellcheck="false" autocomplete="off">
       <div class="fmsg" id="uIdMsg">Letters, a hyphen, then numbers.</div>
 
       <label for="uEmail">Staff email ID *</label>
@@ -390,6 +392,7 @@ function renderCharts(visits) {
       }]
     },
     options: {
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
     }
@@ -410,7 +413,8 @@ function renderCharts(visits) {
         borderWidth: 0,
       }]
     },
-    options: { plugins: { legend: { position: "bottom" } }, cutout: "65%" }
+    options: {
+      responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, cutout: "65%" }
   });
 }
 
@@ -498,7 +502,7 @@ const UF = {
   staff_id:       { el: "uId",    msg: "uIdMsg",    help: "Letters, a hyphen, then numbers.",
     val: () => document.getElementById("uId").value.trim().toUpperCase(),
     check: v => !v ? "Enter the staff ID."
-      : !/^[A-Z]{2,4}-\d{3,6}$/.test(v) ? "Use the format RS-2214 (2–4 letters, hyphen, 3–6 digits)." : "" },
+      : !/^[A-Z]{2,4}-\d{3,6}$/.test(v) ? "Use the format IS-1002 (2–4 letters, hyphen, 3–6 digits)." : "" },
   staff_email_id: { el: "uEmail", msg: "uEmailMsg", help: "",
     val: () => document.getElementById("uEmail").value.trim().toLowerCase(),
     check: v => !v ? "Enter the email ID."
@@ -632,11 +636,6 @@ function exportData(format) {
   demoExport(format);   // real CSV / Excel / PDF generated in the browser
 }
 
-// ── LOGOUT ───────────────────────────────────
-function logout() {
-  clearSession();
-  window.location.href = "login.html";
-}
 
 // ── INIT ─────────────────────────────────────
 loadVisits();
