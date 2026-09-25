@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signup Staff User — IR Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#122A44; --navy-2:#1C3A5A; --blue:#2F6690; --orange:#E8871E;
+  --bg:#F6F7F9; --panel:#FFFFFF;
+  --ink:#16232E; --ink-2:#4A5A6A; --ink-3:#7E8B98;
+  --line:#E2E6EA; --line-2:#EEF1F3; --blue-100:#E9F0F5;
+  --red:#9C2B1F; --red-100:#FBEAE7; --red-line:#D9776B;
+  --green:#2E7D4F; --green-100:#E6F3EB;
+  --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{min-height:100vh;display:grid;grid-template-columns:1fr 470px}
+.brandside{background:var(--navy);color:#fff;padding:60px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.brandside .bars{position:absolute;right:-40px;top:50%;transform:translateY(-50%);display:flex;gap:14px;opacity:.9}
+.brandside .bars div{width:34px;height:220px;border-radius:3px}
+.brandside .bars div:nth-child(1){background:var(--orange)}
+.brandside .bars div:nth-child(2){background:var(--blue)}
+.brandside .bars div:nth-child(3){background:var(--navy-2)}
+.brandside .mark{font-size:13px;font-weight:600;letter-spacing:.05em;color:#93A8BC;position:relative;z-index:1}
+.brandside h1{font-size:32px;font-weight:600;line-height:1.25;max-width:9ch;margin:0;position:relative;z-index:1}
+.brandside .sub{color:#B9C8D6;font-size:14.5px;max-width:32ch;margin-top:14px;position:relative;z-index:1}
+.brandside .foot{font-size:12.5px;color:#7C93A8;position:relative;z-index:1}
+
+.formside{display:flex;align-items:center;justify-content:center;padding:40px}
+.card{width:100%;max-width:370px}
+.card h2{font-size:20px;font-weight:600;margin:0 0 6px}
+.card .lede{color:var(--ink-3);font-size:13.5px;margin:0 0 26px}
+
+.field{margin-bottom:18px}
+label{display:block;font-size:13px;color:var(--ink-2);margin:0 0 6px;font-weight:500}
+.control{position:relative}
+input{width:100%;border:1px solid var(--line);border-radius:7px;padding:11px 13px;font-size:14px;font-family:var(--sans);background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+input::placeholder{color:#A6B1BC}
+input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-100)}
+input.invalid{border-color:var(--red-line)}
+input.invalid:focus{box-shadow:0 0 0 3px var(--red-100)}
+input.valid{border-color:#7FB896}
+.control input[type=password],.control input.pw{padding-right:62px}
+.toggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--blue);font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;padding:6px 8px;border-radius:5px}
+.toggle:hover{background:var(--blue-100)}
+.toggle:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.msg{font-size:12.5px;margin-top:5px;min-height:0;color:var(--ink-3)}
+.msg.err{color:var(--red)}
+
+.strength{display:flex;align-items:center;gap:10px;margin-top:10px}
+.strength .segs{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.strength .segs span{height:4px;border-radius:2px;background:var(--line-2);transition:background .2s}
+.strength .word{font-size:12px;font-weight:500;color:var(--ink-3);min-width:48px;text-align:right}
+.rules{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.rules li{font-size:12.5px;color:var(--ink-3);display:flex;align-items:center;gap:7px}
+.rules li i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:8px;color:#fff;transition:all .15s}
+.rules li.ok{color:var(--ink-2)}
+.rules li.ok i{background:var(--green);border-color:var(--green)}
+
+.banner{display:none;font-size:13px;padding:10px 12px;border-radius:7px;margin-bottom:16px}
+.banner.show{display:block}
+.banner.error{background:var(--red-100);color:var(--red)}
+.banner.success{background:var(--green-100);color:var(--green)}
+
+.actions{display:flex;gap:10px;margin-top:8px}
+.btn{font-family:var(--sans);font-size:14.5px;padding:12px 0;border-radius:7px;cursor:pointer;border:1px solid var(--line)}
+.btn-primary{flex:1.6;background:var(--orange);border-color:var(--orange);color:#3A2200;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:#D97A16}
+.btn-primary:disabled{opacity:.7;cursor:default}
+.btn-secondary{flex:1;background:#fff;color:var(--ink);font-weight:500}
+.btn-secondary:hover{background:var(--line-2)}
+.spinner{width:14px;height:14px;border:2px solid rgba(58,34,0,.25);border-top-color:#3A2200;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.loading .spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.hint{font-size:13px;color:var(--ink-3);margin-top:20px}
+.hint a{color:var(--blue);font-weight:500;text-decoration:none}
+.hint a:hover{text-decoration:underline}
+
+@media (max-width:900px){ .wrap{grid-template-columns:1fr} .brandside{display:none} }
+@media (max-width:420px){ .rules{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation-duration:1.5s!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandside">
+    <div class="mark">IR-WORKSHOP / PL</div>
+    <div>
+      <h1>DIMS - Digital Inspection Management System</h1>
+      <p class="sub">Create a staff account.</p>
+    </div>
+    <div class="foot">Western Railway · RAC / PCO / PL</div>
+    <div class="bars"><div></div><div></div><div></div></div>
+  </div>
+
+  <div class="formside">
+    <div class="card">
+      <h2>Create Staff User Account</h2>
+      <p class="lede">Enter the staff details to set up a new login.</p>
+
+      <div class="banner" id="banner" role="alert"></div>
+
+      <form id="signupForm" novalidate autocomplete="off">
+        <div class="field">
+          <label for="staff_id">Staff ID</label>
+          <div class="control">
+            <input id="staff_id" name="staff_id" type="text" placeholder="e.g. RS-2214" maxlength="12" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="msg" id="staff_id_msg">Letters, a hyphen, then numbers.</div>
+        </div>
+
+        <div class="field">
+          <label for="staff_email_id">Staff Email ID</label>
+          <div class="control">
+            <input id="staff_email_id" name="staff_email_id" type="email" placeholder="name@example.com" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="msg" id="staff_email_id_msg"></div>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="control">
+            <input id="password" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+            <button type="button" class="toggle" id="togglePw" aria-label="Show password" aria-pressed="false">Show</button>
+          </div>
+          <div class="strength" aria-hidden="true">
+            <div class="segs"><span></span><span></span><span></span><span></span></div>
+            <div class="word" id="strengthWord"></div>
+          </div>
+          <ul class="rules" id="rules">
+            <li data-rule="len"><i>✓</i>8+ characters</li>
+            <li data-rule="upper"><i>✓</i>Uppercase letter</li>
+            <li data-rule="lower"><i>✓</i>Lowercase letter</li>
+            <li data-rule="num"><i>✓</i>A number</li>
+            <li data-rule="sym"><i>✓</i>A symbol</li>
+          </ul>
+          <div class="msg" id="password_msg"></div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" id="createBtn"><span class="spinner"></span><span id="createLabel">Create User</span></button>
+          <button type="button" class="btn btn-secondary" id="resetBtn">Reset Form</button>
+        </div>
+      </form>
+
+      <div class="hint">Already have a login? <a href="login.html">Sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const form = document.getElementById('signupForm');
+const fields = {
+  staff_id: {
+    el: document.getElementById('staff_id'),
+    msg: document.getElementById('staff_id_msg'),
+    help: 'Letters, a hyphen, then numbers.',
+    normalize: v => v.trim().toUpperCase(),
+    check: v => !v ? 'Enter your staff ID.'
+      : !/^[A-Z]{2,4}-\d{3,6}$/.test(v) ? 'Use the format RS-2214 (2–4 letters, hyphen, 3–6 digits).' : ''
+  },
+  staff_email_id: {
+    el: document.getElementById('staff_email_id'),
+    msg: document.getElementById('staff_email_id_msg'),
+    help: '',
+    normalize: v => v.trim().toLowerCase(),
+    check: v => !v ? 'Enter your email ID.'
+      : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? 'Enter a valid email, like name@example.com.' : ''
+  },
+  password: {
+    el: document.getElementById('password'),
+    msg: document.getElementById('password_msg'),
+    help: '',
+    normalize: v => v,
+    check: v => !v ? 'Create a password.' : (passwordScore(v) < 5 ? 'Password must meet all the requirements above.' : '')
+  }
+};
+const touched = {};
+
+const rules = {
+  len:   v => v.length >= 8,
+  upper: v => /[A-Z]/.test(v),
+  lower: v => /[a-z]/.test(v),
+  num:   v => /\d/.test(v),
+  sym:   v => /[^A-Za-z0-9]/.test(v)
+};
+function passwordScore(v){ return Object.values(rules).filter(fn => fn(v)).length; }
+
+function updateStrength(v){
+  document.querySelectorAll('#rules li').forEach(li => li.classList.toggle('ok', rules[li.dataset.rule](v)));
+  const score = passwordScore(v);
+  const level = !v ? 0 : score <= 2 ? 1 : score === 3 ? 2 : score === 4 ? 3 : 4;
+  const colors = ['', '#D9776B', '#E8871E', '#5B95BF', '#2E7D4F'];
+  const words = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+  document.querySelectorAll('.segs span').forEach((s, i) => s.style.background = i < level ? colors[level] : '');
+  const w = document.getElementById('strengthWord');
+  w.textContent = words[level]; w.style.color = colors[level] || '';
+}
+
+function validate(name, show){
+  const f = fields[name];
+  const value = f.normalize(f.el.value);
+  const error = f.check(value);
+  if (show){
+    f.el.classList.toggle('invalid', !!error);
+    f.el.classList.toggle('valid', !error && !!value);
+    f.msg.textContent = error || f.help;
+    f.msg.classList.toggle('err', !!error);
+    f.el.setAttribute('aria-invalid', error ? 'true' : 'false');
+  }
+  return !error;
+}
+
+Object.keys(fields).forEach(name => {
+  const f = fields[name];
+  f.el.addEventListener('blur', () => { touched[name] = true; validate(name, true); });
+  f.el.addEventListener('input', () => {
+    if (name === 'staff_id') f.el.value = f.el.value.toUpperCase();
+    if (name === 'password') updateStrength(f.el.value);
+    hideBanner();
+    if (touched[name]) validate(name, true);
+  });
+});
+
+document.getElementById('togglePw').addEventListener('click', e => {
+  const pw = fields.password.el, btn = e.currentTarget;
+  const show = pw.type === 'password';
+  pw.type = show ? 'text' : 'password';
+  btn.textContent = show ? 'Hide' : 'Show';
+  btn.setAttribute('aria-pressed', show);
+  btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+});
+
+const banner = document.getElementById('banner');
+function showBanner(type, text){ banner.className = 'banner show ' + type; banner.textContent = text; }
+function hideBanner(){ banner.className = 'banner'; }
+
+function resetForm(){
+  form.reset();
+  Object.keys(fields).forEach(name => {
+    const f = fields[name];
+    touched[name] = false;
+    f.el.classList.remove('invalid','valid');
+    f.el.removeAttribute('aria-invalid');
+    f.msg.textContent = f.help; f.msg.classList.remove('err');
+  });
+  fields.password.el.type = 'password';
+  const t = document.getElementById('togglePw'); t.textContent = 'Show'; t.setAttribute('aria-pressed','false');
+  updateStrength('');
+  hideBanner();
+  fields.staff_id.el.focus();
+}
+document.getElementById('resetBtn').addEventListener('click', resetForm);
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  hideBanner();
+  let firstBad = null;
+  Object.keys(fields).forEach(name => {
+    touched[name] = true;
+    if (!validate(name, true) && !firstBad) firstBad = fields[name].el;
+  });
+  if (firstBad){
+    showBanner('error', 'Fix the highlighted fields and try again.');
+    firstBad.focus();
+    return;
+  }
+
+  const payload = {
+    staff_id: fields.staff_id.el.value.trim().toUpperCase(),
+    staff_email_id: fields.staff_email_id.el.value.trim().toLowerCase(),
+    password: fields.password.el.value
+  };
+
+  const btn = document.getElementById('createBtn');
+  const label = document.getElementById('createLabel');
+  btn.disabled = true; btn.classList.add('loading'); label.textContent = 'Creating…';
+
+  try {
+    // TODO: replace this demo delay with the real API call, e.g.
+    // const res = await fetch('/api/users/', { method:'POST',
+    //   headers:{'Content-Type':'application/json','X-CSRFToken': getCsrfToken()},
+    //   body: JSON.stringify(payload) });
+    // if (!res.ok) throw new Error((await res.json()).detail || 'Could not create the user.');
+    await new Promise(r => setTimeout(r, 900));
+
+    showBanner('success', 'User ' + payload.staff_id + ' created. Redirecting to sign in…');
+    setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+  } catch (err) {
+    showBanner('error', err.message || 'Could not create the user. Try again.');
+    btn.disabled = false;
+  } finally {
+    btn.classList.remove('loading'); label.textContent = 'Create User';
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Critical tasks — Coach 04512</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#122A44; --navy-2:#1C3A5A; --blue:#2F6690; --orange:#E8871E;
+  --bg:#F6F7F9; --panel:#FFFFFF;
+  --ink:#16232E; --ink-2:#4A5A6A; --ink-3:#7E8B98;
+  --line:#E2E6EA; --line-2:#EEF1F3;
+  --blue-100:#E9F0F5; --orange-100:#FCEEDD;
+  --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-columns:212px 1fr;min-height:100vh}
+.rail{background:var(--navy);color:#fff;padding:24px 0;display:flex;flex-direction:column}
+.rail .mark{font-size:12px;font-weight:600;letter-spacing:.04em;color:#93A8BC;padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:8px}
+.rail nav a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent}
+.rail nav a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
+.rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
+
+main{padding:32px 46px 60px;max-width:720px}
+h1{font-size:21px;font-weight:600;margin:0}
+.coach{color:var(--navy);font-weight:500}
+.meta{color:var(--ink-3);font-size:13.5px;margin:4px 0 8px}
+.note{color:var(--ink-3);font-size:13px;margin:0 0 26px;max-width:56ch}
+
+.tally{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.tally .stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.tally .num{font-size:27px;font-weight:600;line-height:1;color:var(--navy)}
+.tally .lbl{font-size:12.5px;color:var(--ink-3);font-weight:500;margin-top:5px}
+.tally .stat.warn .num{color:#C9822E}
+
+.list{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-radius:10px;border:1px solid var(--line);background:var(--panel)}
+.row .name{font-weight:500;font-size:14.5px}
+.row .section{font-size:12px;color:var(--ink-3);margin-top:2px}
+.row .value{font-weight:500;font-size:15px;text-align:right;color:var(--navy)}
+.row .value.empty{color:var(--ink-3);font-weight:400;font-style:italic;font-size:13px}
+.tag{display:inline-block;font-size:10.5px;font-weight:500;color:var(--blue);background:var(--blue-100);padding:2px 8px;border-radius:5px;margin-left:8px;vertical-align:1px}
+
+/* Coach details card */
+.coachcard{display:flex;gap:18px;background:var(--navy);color:#fff;border-radius:12px;padding:22px 24px;margin-bottom:24px}
+.cc-avatar{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;flex-shrink:0}
+.cc-main{min-width:0;flex:1}
+.cc-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cc-top h1{font-size:20px;color:#fff}
+.badge{font-size:11.5px;font-weight:500;padding:3px 10px;border-radius:6px;white-space:nowrap}
+.badge-light{background:rgba(255,255,255,.14);color:#fff}
+.badge-orange{background:var(--orange);color:#3A2200}
+.cc-sub{color:#B9C8D6;font-size:13px;margin-top:5px}
+.cc-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
+.cc-item .cc-lbl{display:block;font-size:11px;color:#93A8BC;text-transform:uppercase;letter-spacing:.03em;margin-bottom:3px}
+.cc-item .cc-val{font-size:14.5px;font-weight:500}
+
+/* Task cards */
+.card2{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:15px 18px;border-radius:10px;border:1px solid var(--line);border-left:4px solid var(--line);background:var(--panel)}
+.card2.c-ok{border-left-color:#2E7D4F}
+.card2.c-bad{border-left-color:#9C2B1F}
+.card2.c-pending{border-left-color:#C9822E}
+.card2 .name{font-weight:500;font-size:14.5px}
+.card2 .section{font-size:12px;color:var(--ink-3);margin-top:2px}
+.pill2{font-size:12.5px;font-weight:600;padding:5px 13px;border-radius:7px;white-space:nowrap}
+.pill2.p-ok{background:#E6F3EB;color:#2E7D4F}
+.pill2.p-bad{background:#FBEAE7;color:#9C2B1F}
+.pill2.p-neutral{background:var(--blue-100);color:var(--blue)}
+.pill2.p-pending{background:var(--orange-100);color:#8A5410;font-weight:500;font-style:italic}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="mark">IR-WORKSHOP / PL</div>
+    <nav>
+      <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
+      <a class="active" href="critical-tasks.html">Critical tasks</a>
+    </nav>
+    <div class="who">Logged in as<br><strong style="color:#fff" id="userName">R. Sharma · IS</strong></div>
+  </aside>
+  <main>
+    <h1>Critical tasks</h1>
+    <p class="note">Parameters flagged for priority visibility. Values are shown as entered — no automatic pass/fail is applied at this stage.</p>
+
+    <div class="coachcard">
+      <div class="cc-avatar" id="ccAvatar">—</div>
+      <div class="cc-main">
+        <div class="cc-top">
+          <h1 id="ccCoach">Coach —</h1>
+          <span class="badge badge-light" id="ccType">—</span>
+          <span class="badge badge-orange" id="ccStatus">—</span>
+        </div>
+        <div class="cc-sub">Pre-inspection</div>
+        <div class="cc-meta">
+          <div class="cc-item"><span class="cc-lbl">Report date</span><span class="cc-val" id="ccDate">—</span></div>
+          <div class="cc-item"><span class="cc-lbl">Inspection staff</span><span class="cc-val" id="ccInspector">—</span></div>
+          <div class="cc-item"><span class="cc-lbl">Sections complete</span><span class="cc-val" id="ccSections">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tally">
+      <div class="stat"><div class="num" id="tFlagged">—</div><div class="lbl">flagged parameters</div></div>
+      <div class="stat"><div class="num" id="tEntered">—</div><div class="lbl">entered</div></div>
+      <div class="stat" id="tPendingCard"><div class="num" id="tPending">—</div><div class="lbl">not yet entered</div></div>
+    </div>
+
+    <div class="list" id="list"></div>
+  </main>
+</div>
+<script src="api.js"></script>
+<script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
+<script>
+requireAuth();
+const me = getUser();
+document.getElementById("userName").textContent = (me?.full_name || "") + (me?.is_mgmt_staff ? " · SSE / HOD" : " · IS");
+document.getElementById("summaryLink").href = me?.is_mgmt_staff ? MGMT_HOME : IS_HOME;
+document.getElementById("summaryLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
+const params = new URLSearchParams(location.search);
+const visit = getVisit(+params.get("visit_id") || 1);   // opened directly: shows coach 04512, same as is-main-entry's default
+
+function initials(name) { return (name || "?").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase(); }
+function statusOf(v) { return v.status === "SUBMITTED" ? "Submitted" : v.status === "ASSIGNED" ? "Not started" : "In progress"; }
+function pillClass(v) {
+  const s = (v || "").toLowerCase();
+  if (["ok", "earthed", "working"].includes(s)) return "p-ok";
+  if (["not ok", "not earthed", "not working"].includes(s)) return "p-bad";
+  if (!v) return "p-pending";
+  return "p-neutral";
+}
+
+if (!visit) {
+  document.querySelector(".coachcard").style.display = "none";
+  document.querySelector(".tally").style.display = "none";
+  document.getElementById("list").innerHTML = '<div class="card2"><div class="value empty">No critical tasks yet.</div></div>';
+} else {
+  document.getElementById("ccAvatar").textContent = initials(visit.assigned_to_name);
+  document.getElementById("ccCoach").textContent = "Coach " + visit.coach_number;
+  document.getElementById("ccType").textContent = _TYPE_LABEL[visit.coach_type] || visit.coach_type;
+  document.getElementById("ccStatus").textContent = statusOf(visit);
+  document.getElementById("ccDate").textContent = visit.submitted_on ? fmtDateTime(visit.submitted_on) : visit.last_saved_on ? fmtDateTime(visit.last_saved_on) : "Not saved yet";
+  document.getElementById("ccInspector").textContent = visit.assigned_to_name || "Unassigned";
+  document.getElementById("ccSections").textContent = (visit.sections_completed ?? 0) + " of " + (visit.sections_total || 8);
+
+  const flagged = flaggedValues(visit);
+  const entered = flagged.filter(f => f.value).length;
+  document.getElementById("tFlagged").textContent = flagged.length;
+  document.getElementById("tEntered").textContent = entered;
+  document.getElementById("tPending").textContent = flagged.length - entered;
+  document.getElementById("tPendingCard").classList.toggle("warn", flagged.length - entered > 0);
+
+  document.getElementById("list").innerHTML = flagged.map(f => `
+    <div class="card2 ${f.value ? (pillClass(f.value) === "p-bad" ? "c-bad" : "c-ok") : "c-pending"}">
+      <div>
+        <div class="name">${esc(f.label)}<span class="tag">flagged</span></div>
+        <div class="section">${esc(f.sectionName)}${f.sub ? " · " + esc(f.sub) : ""}</div>
+      </div>
+      <div class="pill2 ${pillClass(f.value)}">${esc(f.value || "Not yet entered")}</div>
+    </div>`).join("");
+}
+</script>
+</body>
+</html>

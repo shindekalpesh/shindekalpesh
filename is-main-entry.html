@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Main entry — Coach 04512</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#122A44; --navy-2:#1C3A5A; --blue:#2F6690; --orange:#E8871E;
+  --bg:#F6F7F9; --panel:#FFFFFF;
+  --ink:#16232E; --ink-2:#4A5A6A; --ink-3:#7E8B98;
+  --line:#E2E6EA; --line-2:#EEF1F3;
+  --blue-100:#E9F0F5; --orange-100:#FCEEDD;
+  --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-columns:212px 1fr;min-height:100vh}
+.rail{background:var(--navy);color:#fff;padding:24px 0;display:flex;flex-direction:column}
+.rail .mark{font-size:12px;font-weight:600;letter-spacing:.04em;color:#93A8BC;padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:8px}
+.rail nav a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent}
+.rail nav a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
+.rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
+
+.workspace{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.sectionnav{border-right:1px solid var(--line);padding:28px 14px;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--panel)}
+.sectionnav .head{padding:0 10px 14px}
+.sectionnav h1{font-size:17px;font-weight:600;margin:0}
+.sectionnav .coach{color:var(--ink-2);font-size:13px}
+.sectionnav ol{list-style:none;margin:6px 0 0;padding:0}
+.sectionnav li{margin-bottom:2px}
+.sectionnav button{
+  width:100%;text-align:left;background:none;border:none;padding:9px 10px;border-radius:7px;
+  font-size:13.5px;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:9px;font-family:var(--sans)
+}
+.sectionnav button:hover{background:var(--line-2)}
+.sectionnav button.current{background:var(--blue-100);color:var(--blue);font-weight:600}
+.dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.dot.done{background:var(--orange);border-color:var(--orange);color:#fff}
+.dot.current{border-color:var(--blue)}
+
+main{padding:32px 46px 80px;max-width:700px}
+.topline{color:var(--ink-3);font-size:13px;margin-bottom:2px}
+.progresswrap{display:flex;align-items:center;gap:10px;margin:6px 0 28px}
+.progresswrap .bar{flex:1;height:5px;background:var(--line-2);border-radius:3px;overflow:hidden}
+.progresswrap .bar span{display:block;height:100%;width:0%;background:var(--orange)}
+.progresswrap .pct{font-size:12px;color:var(--ink-3);font-weight:500}
+
+.panel{display:none}
+.panel.show{display:block}
+.panel h2{font-size:19px;font-weight:600;margin:0 0 4px}
+.panel .sub{color:var(--ink-3);font-size:13.5px;margin:0 0 20px}
+
+.field{padding:16px 0;border-bottom:1px solid var(--line-2);display:grid;grid-template-columns:1fr 200px;gap:20px;align-items:center}
+.field .label{font-size:14.5px}
+.field .label .code{color:var(--ink-3);font-size:12px;display:block;margin-top:2px}
+.field .tag{display:inline-block;font-size:10.5px;font-weight:500;color:var(--blue);background:var(--blue-100);padding:2px 8px;border-radius:5px;margin-left:8px;vertical-align:1px}
+input, select, textarea{
+  width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;
+  font-family:var(--sans);font-size:14px;background:#fff;color:var(--ink)
+}
+input:focus, select:focus, textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-100)}
+textarea{resize:vertical;min-height:60px}
+.fullrow{grid-template-columns:1fr}
+.fullrow textarea{margin-top:8px}
+
+.navbtns{display:flex;justify-content:space-between;margin-top:28px}
+.navbtns button{font-family:var(--sans);font-size:14px;padding:10px 18px;border-radius:7px;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink)}
+.navbtns button:hover{background:var(--line-2)}
+.navbtns button:disabled{opacity:.4;cursor:default}
+
+.footer-bar{position:sticky;bottom:0;background:var(--panel);border-top:1px solid var(--line);margin:36px -46px 0;padding:15px 46px;display:flex;justify-content:space-between;align-items:center}
+.saved{font-size:13px;color:var(--ink-3);display:flex;align-items:center;gap:6px}
+.saved .glow{width:7px;height:7px;border-radius:50%;background:var(--blue)}
+.actions{display:flex;gap:10px}
+.actions button{font-family:var(--sans);font-size:14px;padding:10px 20px;border-radius:7px;cursor:pointer;border:1px solid var(--line)}
+.btn-secondary{background:#fff;color:var(--ink)}
+.btn-secondary:hover{background:var(--line-2)}
+.btn-primary{background:var(--orange);border-color:var(--orange);color:#3A2200;font-weight:600}
+.btn-primary:hover{background:#D97A16}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.dropdown{position:relative;display:inline-block}
+.exp{font-family:var(--sans);font-size:13.5px;padding:8px 14px;border-radius:7px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:500;white-space:nowrap}
+.exp:hover{background:var(--line-2)}
+.exp.solid{background:var(--blue);border-color:var(--blue);color:#fff}
+.exp.solid:hover,.exp.solid[aria-expanded="true"]{background:#255578;border-color:#255578}
+.exp svg{transition:transform .15s}.exp[aria-expanded="true"] svg{transform:rotate(180deg)}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:130px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(18,42,68,.12);padding:5px;z-index:50}
+.menu.show{display:block}
+.menu button{display:block;width:100%;text-align:left;border:none;background:none;font-family:var(--sans);font-size:14px;color:var(--ink);padding:9px 12px;border-radius:6px;cursor:pointer}
+.menu button:hover,.menu button:focus-visible{background:var(--blue-100);color:var(--blue);outline:none}
+.exp:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.panelhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px}
+.panelhead .sub{margin-bottom:0}
+.dot.partial{border-color:var(--orange);background:linear-gradient(90deg,var(--orange) 50%,transparent 50%)}
+.nm{flex:1;min-width:0}
+.cnt{margin-left:auto;font-size:11.5px;color:var(--ink-3);font-weight:500}
+.sectionnav button.current .cnt{color:var(--blue)}
+input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:var(--ink-2);cursor:default}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="mark">IR-WORKSHOP / PL</div>
+    <nav>
+      <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
+      <a href="critical-tasks.html">Critical tasks</a>
+    </nav>
+    <div class="who">Logged in as<br><strong style="color:#fff" id="userName">R. Sharma · IS</strong></div>
+  </aside>
+
+  <div class="workspace">
+    <aside class="sectionnav">
+      <div class="head">
+        <h1 id="coachNo">Coach 04512</h1>
+        <div class="coach" id="coachType">LHB · Pre-inspection</div>
+      </div>
+      <ol id="navlist"></ol>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div class="topline">Section <span id="secnum">1</span> of <span id="sectotal">8</span> · <span id="doneCount">0</span> complete</div>
+        <div id="sheetExport"></div>
+      </div>
+      <div class="progresswrap">
+        <div class="bar"><span id="progressbar"></span></div>
+        <span class="pct" id="progresspct">0%</span>
+      </div>
+
+      <div class="panel show" data-section="0">
+        <h2>Contactor load test</h2>
+        <p class="sub">Numeric amp readings, one contactor at a time.</p>
+        <div class="field"><div class="label">Pump 1.1<span class="code">K-24 · amp</span></div><input type="number" placeholder="0.0"></div>
+        <div class="field"><div class="label">Compressor 1.1<span class="code">K-33 · amp</span></div><input type="number" placeholder="0.0"></div>
+        <div class="field"><div class="label">Blower motor 1.1<span class="code">K-26 · amp</span></div><input type="number" placeholder="0.0"></div>
+        <div class="field"><div class="label">Compressor 1.2<span class="code">K-34 · amp</span></div><input type="number" placeholder="0.0"></div>
+        <div class="field"><div class="label">RBC contactor<span class="tag">flagged</span><span class="code">K-30 · amp</span></div><input type="number" placeholder="0.0"></div>
+        <div class="field"><div class="label">Heater PP 2.1<span class="code">K-40 · amp</span></div><input type="number" placeholder="0.0"></div>
+      </div>
+
+      <div class="panel" data-section="1">
+        <h2>Insulation resistance test</h2>
+        <p class="sub">Value observed per voltage class.</p>
+        <div class="field"><div class="label">750V circuit<span class="tag">flagged</span><span class="code">min. 05 MΩ</span></div><input type="number" placeholder="MΩ"></div>
+        <div class="field"><div class="label">415V circuit<span class="code">min. 03 MΩ</span></div><input type="number" placeholder="MΩ"></div>
+        <div class="field"><div class="label">230V circuit<span class="code">min. 02 MΩ</span></div><input type="number" placeholder="MΩ"></div>
+        <div class="field"><div class="label">110V circuit<span class="code">min. 02 MΩ</span></div><input type="number" placeholder="MΩ"></div>
+        <div class="field"><div class="label">24V circuit<span class="code">min. 01 MΩ</span></div><input type="number" placeholder="MΩ"></div>
+      </div>
+
+      <div class="panel" data-section="2">
+        <h2>Equipment health checklist</h2>
+        <p class="sub">Electrical fittings, AC & pantry, and lighting — status per item.</p>
+        <div class="field"><div class="label">MMR</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Contactors</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Deep freezer</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Return filter</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Tube light (S)</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Earthing</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+      </div>
+
+      <div class="panel" data-section="3">
+        <h2>Detailed technical verification</h2>
+        <p class="sub">Mixed make/model text fields and status checks.</p>
+        <div class="field"><div class="label">HP cut-out, PP side<span class="tag">flagged</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">LP cut-out, NPP side<span class="tag">flagged</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
+        <div class="field"><div class="label">Earthing device<span class="tag">flagged</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
+        <div class="field"><div class="label">Power panel make</div><input type="text" placeholder="Manufacturer name"></div>
+        <div class="field"><div class="label">EBC cum RBC<span class="tag">flagged</span></div><select><option>Select</option><option>Working</option><option>Not working</option></select></div>
+      </div>
+
+      <div class="panel" data-section="4">
+        <h2>Modification tracking log</h2>
+        <p class="sub">Fixed list of known field modifications.</p>
+        <div class="field"><div class="label">Blower heater modification</div><select><option>Select</option><option>To be done</option><option>Already done</option></select></div>
+        <div class="field"><div class="label">200VA transformer modification</div><select><option>Select</option><option>To be done</option><option>Already done</option></select></div>
+        <div class="field"><div class="label">Rodent protection (mouse plate)</div><select><option>Select</option><option>To be done</option><option>Already done</option></select></div>
+      </div>
+
+      <div class="panel" data-section="5">
+        <h2>Pre-cooling performance test</h2>
+        <p class="sub">Cut-in / cut-out temperature and timing.</p>
+        <div class="field"><div class="label">Rotary switch position</div><input type="text" placeholder="Position"></div>
+        <div class="field"><div class="label">Coach temp at cut-in</div><input type="number" placeholder="°C"></div>
+        <div class="field"><div class="label">Coach temp at cut-out</div><input type="number" placeholder="°C"></div>
+        <div class="field"><div class="label">Time taken</div><input type="number" placeholder="minutes"></div>
+      </div>
+
+      <div class="panel" data-section="6">
+        <h2>Power car / DG-set</h2>
+        <p class="sub">Set A and Set B details, where applicable.</p>
+        <div class="field"><div class="label">Make of DG set, Set A</div><input type="text" placeholder="Manufacturer"></div>
+        <div class="field"><div class="label">Diesel tank status, Set A</div><select><option>Select</option><option>Full</option><option>Empty</option><option>Partially filled</option></select></div>
+        <div class="field"><div class="label">Battery cell-end connections, Set A</div><select><option>Select</option><option>Disconnected</option><option>Not disconnected</option></select></div>
+      </div>
+
+      <div class="panel" data-section="7">
+        <h2>Earthing & deficiency declaration</h2>
+        <p class="sub">Final coach-level checks before sign-off.</p>
+        <div class="field"><div class="label">Shut-off valve / live terminal<span class="tag">flagged</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
+        <div class="field fullrow">
+          <div class="label">Any other deficiency</div>
+          <textarea placeholder="Describe the issue, if any"></textarea>
+        </div>
+      </div>
+
+      <div class="navbtns">
+        <button id="prevBtn">← Previous section</button>
+        <button id="nextBtn">Next section →</button>
+      </div>
+
+      <div class="footer-bar">
+        <div class="saved"><span class="glow"></span><span id="savedText">Last saved 2 min ago</span></div>
+        <div class="actions">
+          <button class="btn-secondary" id="saveBtn">Save and continue</button>
+          <button class="btn-primary" id="submitBtn">Submit</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
+<script>
+const sections = [
+  "Contactor load test","Insulation resistance","Equipment health","Technical verification",
+  "Modification log","Pre-cooling test","Power car / DG-set","Earthing & deficiency"
+];
+const $ = id => document.getElementById(id);
+const panels = [...document.querySelectorAll(".panel")];
+const navlist = $("navlist");
+let current = 0;
+
+// ── Section status comes from the fields themselves, so the left panel, progress bar and summaries always agree ──
+const isFilled = c => c.value.trim() !== "" && c.value !== "Select";
+const controls = i => [...panels[i].querySelectorAll(".field")].map(f => f.querySelector("input,select,textarea"));
+function stat(i) {
+  const req = controls(i).filter(c => c.tagName !== "TEXTAREA");      // the free-text deficiency note is optional
+  const n = req.filter(isFilled).length;
+  return { n, total: req.length, status: n === 0 ? "empty" : n === req.length ? "done" : "partial" };
+}
+const doneCount = () => sections.filter((_, i) => stat(i).status === "done").length;
+const snapshot = () => panels.map((_, i) => controls(i).map(c => c.value));   // saved as-is with the coach
+
+sections.forEach((name, i) => {
+  const li = document.createElement("li"), btn = document.createElement("button");
+  btn.innerHTML = `<span class="dot" id="dot-${i}"></span><span class="nm">${name}</span><span class="cnt" id="cnt-${i}"></span>`;
+  btn.onclick = () => goTo(i);
+  li.appendChild(btn); navlist.appendChild(li);
+});
+
+function render() {
+  panels.forEach((p, i) => p.classList.toggle("show", i === current));
+  document.querySelectorAll("#navlist button").forEach((b, i) => b.classList.toggle("current", i === current));
+  let done = 0;
+  sections.forEach((_, i) => {
+    const s = stat(i), dot = $("dot-" + i);
+    dot.className = "dot" + (s.status === "done" ? " done" : s.status === "partial" ? " partial" : "") + (i === current && s.status !== "done" ? " current" : "");
+    dot.textContent = s.status === "done" ? "✓" : "";
+    $("cnt-" + i).textContent = s.n + "/" + s.total;
+    if (s.status === "done") done++;
+  });
+  const pct = Math.round(done / sections.length * 100);
+  $("secnum").textContent = current + 1;
+  $("sectotal").textContent = sections.length;
+  $("doneCount").textContent = done;
+  $("progressbar").style.width = pct + "%";
+  $("progresspct").textContent = pct + "%";
+  $("prevBtn").disabled = current === 0;
+  $("nextBtn").disabled = current === sections.length - 1;
+}
+function goTo(i) { current = i; render(); }
+$("prevBtn").onclick = () => goTo(Math.max(0, current - 1));
+$("nextBtn").onclick = () => goTo(Math.min(sections.length - 1, current + 1));
+document.querySelector("main").addEventListener("input", render);
+document.querySelector("main").addEventListener("change", render);
+
+// ── Export: one section, or the entire sheet (CSV / Excel / PDF) ──
+const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+function sectionRows(i) {
+  return [...panels[i].querySelectorAll(".field")].map(f => {
+    const lab = f.querySelector(".label"), c = f.querySelector("input,select,textarea"), code = lab.querySelector(".code");
+    return [lab.firstChild.textContent.trim(), code ? code.textContent.trim() : "", lab.querySelector(".tag") ? "Yes" : "No", isFilled(c) ? c.value.trim() : "Not entered"];
+  });
+}
+let coachNo = "coach";
+function exportSection(i, format) {
+  exportRows(exportFileBase(coachNo, slug(sections[i])), `Coach ${coachNo} — ${sections[i]}`,
+    ["Parameter", "Spec / code", "Flagged", "Value"], sectionRows(i), format);
+}
+function exportSheet(format) {
+  const rows = [];
+  sections.forEach((name, i) => sectionRows(i).forEach(r => rows.push([name, ...r])));
+  exportRows(exportFileBase(coachNo, "inspection-sheet"), `Coach ${coachNo} — Pre-inspection sheet`,
+    ["Section", "Parameter", "Spec / code", "Flagged", "Value"], rows, format);
+}
+function closeMenus() { document.querySelectorAll(".menu.show").forEach(m => { m.classList.remove("show"); m.previousElementSibling.setAttribute("aria-expanded", "false"); }); }
+function exportDropdown(label, solid, onPick) {
+  const wrap = document.createElement("div"); wrap.className = "dropdown";
+  wrap.innerHTML = `<button type="button" class="exp${solid ? " solid" : ""}" aria-haspopup="menu" aria-expanded="false">${label}
+      <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="menu" role="menu"><button type="button" role="menuitem" data-f="csv">CSV</button><button type="button" role="menuitem" data-f="excel">Excel</button><button type="button" role="menuitem" data-f="pdf">PDF</button></div>`;
+  const btn = wrap.querySelector(".exp"), menu = wrap.querySelector(".menu");
+  btn.onclick = e => {
+    e.stopPropagation();
+    const open = !menu.classList.contains("show");
+    closeMenus();
+    menu.classList.toggle("show", open); btn.setAttribute("aria-expanded", open);
+    if (open) menu.querySelector("button").focus();
+  };
+  menu.onclick = e => { const b = e.target.closest("button[data-f]"); if (b) { closeMenus(); onPick(b.dataset.f); } };
+  menu.onkeydown = e => {
+    const items = [...menu.querySelectorAll("button")], i = items.indexOf(document.activeElement);
+    if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+    if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+    if (e.key === "Escape") { closeMenus(); btn.focus(); }
+  };
+  return wrap;
+}
+document.addEventListener("click", closeMenus);
+panels.forEach((p, i) => {                       // per-section Export button next to each section title
+  const h2 = p.querySelector("h2"), sub = p.querySelector(".sub"), head = document.createElement("div"), left = document.createElement("div");
+  head.className = "panelhead"; p.insertBefore(head, h2);
+  left.appendChild(h2); left.appendChild(sub); head.appendChild(left);
+  head.appendChild(exportDropdown("Export section", false, f => exportSection(i, f)));
+});
+$("sheetExport").appendChild(exportDropdown("Export entire sheet", true, exportSheet));
+
+// ── Demo wiring ──────────────────────────────
+requireAuth();
+const me = getUser();
+const params = new URLSearchParams(location.search);
+const visit = getVisit(+params.get("visit_id") || 1);          // opened directly: shows coach 04512
+const TYPE_NAMES = { LHB: "LHB", NEW_LHB: "New LHB", THERMAL_LHB: "Thermal LHB", THERMAL_SG: "Thermal SG" };
+const readOnly = params.get("readonly") === "1" || visit?.status === "SUBMITTED";
+
+$("userName").textContent = (me?.full_name || "") + (me?.is_mgmt_staff ? " · SSE / HOD" : " · IS");
+$("summaryLink").href = me?.is_mgmt_staff ? MGMT_HOME : IS_HOME;
+$("summaryLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
+
+const DEMO_FILL = {   // sample readings shown for finished sections
+  0: { "Pump 1.1": 4.2, "Compressor 1.1": 11.8, "Blower motor 1.1": 3.6, "Compressor 1.2": 12.1, "RBC contactor": 8.7, "Heater PP 2.1": 9.4 },
+  1: { "750V circuit": 3.1, "415V circuit": 4.8, "230V circuit": 3.2, "110V circuit": 2.6, "24V circuit": 1.9 },
+  2: { "MMR": "OK", "Contactors": "OK", "Deep freezer": "OK", "Return filter": "OK", "Tube light (S)": "OK", "Earthing": "OK" },
+  3: { "HP cut-out, PP side": "OK", "LP cut-out, NPP side": "Not OK", "Earthing device": "Earthed", "Power panel make": "Medha", "EBC cum RBC": "Working" },
+  4: { "Blower heater modification": "Already done", "200VA transformer modification": "Already done", "Rodent protection (mouse plate)": "To be done" },
+  5: { "Rotary switch position": "3", "Coach temp at cut-in": 34, "Coach temp at cut-out": 24, "Time taken": 42 },
+  6: { "Make of DG set, Set A": "Cummins", "Diesel tank status, Set A": "Full", "Battery cell-end connections, Set A": "Disconnected" },
+  7: { "Shut-off valve / live terminal": "Earthed", "Any other deficiency": "None noted" }
+};
+function fillSection(i) {
+  panels[i].querySelectorAll(".field").forEach(f => {
+    const lab = f.querySelector(".label"), key = lab && lab.firstChild ? lab.firstChild.textContent.trim() : "";
+    if (!(key in DEMO_FILL[i]) || (visit.id === 1 && key === "RBC contactor")) return;   // 04512: RBC reading still to be entered
+    f.querySelector("input,select,textarea").value = String(DEMO_FILL[i][key]);
+  });
+}
+if (visit) {
+  coachNo = visit.coach_number;
+  $("coachNo").textContent = "Coach " + visit.coach_number;
+  $("coachType").textContent = (TYPE_NAMES[visit.coach_type] || visit.coach_type) + " · Pre-inspection";
+  document.title = "Main entry — Coach " + visit.coach_number;
+
+  if (visit.entry) {                                   // values saved earlier from this page
+    visit.entry.forEach((vals, i) => controls(i).forEach((c, k) => { c.value = vals[k]; }));
+  } else if (DEMO_DATA) {                              // sample readings for the demo coaches
+    const upTo = visit.status === "SUBMITTED" ? sections.length : (visit.id === 1 ? 4 : (visit.sections_completed || 0));
+    for (let i = 0; i < upTo; i++) fillSection(i);
+  }
+  const firstOpen = sections.findIndex((_, i) => stat(i).status !== "done");
+  current = readOnly || firstOpen < 0 ? 0 : firstOpen;   // resume at the first section that isn't complete
+
+  const savedText = $("savedText");
+  savedText.textContent = readOnly ? "View only" : (visit.last_saved_on ? "Last saved " + fmtDateTime(visit.last_saved_on) : "Not saved yet");
+  if (readOnly) {
+    document.querySelectorAll("input,select,textarea").forEach(el => el.disabled = true);
+    $("saveBtn").style.display = $("submitBtn").style.display = "none";
+  }
+  $("saveBtn").onclick = () => {
+    saveVisitProgress(visit.id, doneCount(), snapshot());
+    savedText.textContent = "Last saved just now";
+    showToast("Progress saved.");
+    if (current < sections.length - 1) goTo(current + 1);   // "Save and continue"
+  };
+  $("submitBtn").onclick = () => {
+    const firstIncomplete = sections.findIndex((_, i) => stat(i).status !== "done");
+    if (firstIncomplete >= 0) {
+      showToast("Every parameter must be recorded before you can submit — " + sections[firstIncomplete] + " is incomplete.", "error");
+      goTo(firstIncomplete);
+      return;
+    }
+    submitVisit(visit.id, doneCount(), snapshot());
+    showToast("Inspection submitted.");
+    setTimeout(() => { location.href = IS_HOME; }, 900);
+  };
+} else {   // no such coach (e.g. clean start, nothing assigned yet)
+  $("coachNo").textContent = "No coach selected";
+  $("coachType").textContent = "Open a coach from your assignments";
+  $("savedText").textContent = "";
+  $("saveBtn").style.display = $("submitBtn").style.display = "none";
+  $("sheetExport").style.display = "none";
+  document.querySelectorAll(".panelhead .dropdown").forEach(d => d.style.display = "none");
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Summary — IR Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#122A44;--navy2:#1C3A5A;--blue:#2F6690;--orange:#E8871E;
+  --bg:#F6F7F9;--panel:#fff;
+  --ink:#16232E;--ink2:#4A5A6A;--ink3:#7E8B98;
+  --line:#E2E6EA;--line2:#EEF1F3;
+  --blue100:#E9F0F5;--orange100:#FCEEDD;
+  --sans:'Outfit',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-columns:212px 1fr;min-height:100vh}
+.rail{background:var(--navy);padding:24px 0;display:flex;flex-direction:column}
+.rail .mark{font-size:11.5px;font-weight:600;letter-spacing:.06em;color:#93A8BC;padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:8px}
+.rail a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent;transition:background .15s}
+.rail a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
+.rail a:hover:not(.active){background:rgba(255,255,255,.04)}
+.rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
+.rail .who strong{color:#fff;display:block;margin-top:2px}
+.rail .logout{display:block;margin:10px 22px 0;font-size:12.5px;color:#93A8BC;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans)}
+main{padding:32px 44px 60px;min-width:0}
+.topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+h1{font-size:21px;font-weight:600}
+.meta{color:var(--ink3);font-size:13.5px;margin-bottom:26px}
+.titlewrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.today{font-size:12.5px;font-weight:500;color:var(--blue);background:var(--blue100);padding:4px 10px;border-radius:6px;white-space:nowrap}
+.btn{font-family:var(--sans);font-size:14px;padding:9px 18px;border-radius:7px;cursor:pointer;border:none;font-weight:600}
+.btn-orange{background:var(--orange);color:#3A2200}
+.btn-orange:hover{background:#D97A16}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn-ghost:hover{background:var(--line2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.stat .lbl{font-size:12.5px;color:var(--ink3);font-weight:500}
+.stat .num{font-size:28px;font-weight:600;margin-top:4px;color:var(--navy)}
+/* Filters */
+.filters{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filters label{font-size:12px;color:var(--ink2);font-weight:500;display:block;margin-bottom:4px}
+.filters input,.filters select{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13.5px;font-family:var(--sans);color:var(--ink);background:#fff;width:170px}
+.filters input:focus,.filters select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue100)}
+/* Table */
+.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:28px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;color:var(--ink3);font-weight:500;padding:11px 16px;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-bottom:1px solid var(--line2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#FAFAF9;cursor:pointer}
+.coach{font-weight:600;color:var(--navy)}
+.pill{font-size:12px;padding:3px 10px;border-radius:6px;font-weight:500}
+.pill-orange{background:var(--orange100);color:#8A5410}
+.pill-blue{background:var(--blue100);color:var(--blue)}
+.pill-gray{background:var(--line2);color:var(--ink2)}
+.ts{color:var(--ink3);font-size:13px}
+.arrow{color:var(--ink3);text-align:right;font-size:18px}
+.loading{text-align:center;padding:40px;color:var(--ink3)}
+/* Charts */
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+.chart-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px}
+.chart-card h3{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:16px}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:12px;padding:28px;width:460px;max-width:90vw;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:18px}
+.modal label{display:block;font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:5px;margin-top:14px}
+.modal input,.modal select{width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:14px;font-family:var(--sans);color:var(--ink)}
+.modal input:focus,.modal select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue100)}
+.modal .actions{display:flex;gap:10px;margin-top:22px;justify-content:flex-end}
+/* Create staff user modal */
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.modal-head h2{margin-bottom:4px}
+.modal .sub{font-size:13px;color:var(--ink3)}
+.x{border:none;background:none;font-size:24px;line-height:1;color:var(--ink3);cursor:pointer;padding:2px 8px;border-radius:6px}
+.x:hover{background:var(--line2)}
+.modal input.invalid{border-color:#D9776B}
+.modal input.invalid:focus{box-shadow:0 0 0 3px #FBEAE7}
+.fmsg{font-size:12.5px;color:var(--ink3);margin-top:5px}
+.fmsg.err{color:#9C2B1F}
+.pwwrap{position:relative}
+.pwwrap input{padding-right:62px}
+.pwtoggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--blue);font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;padding:6px 8px;border-radius:5px}
+.pwtoggle:hover{background:var(--blue100)}
+.strength{display:flex;align-items:center;gap:10px;margin-top:10px}
+.segs{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.segs span{height:4px;border-radius:2px;background:var(--line2);transition:background .2s}
+.sword{font-size:12px;font-weight:500;min-width:48px;text-align:right;color:var(--ink3)}
+.rules{list-style:none;margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
+.rules li{font-size:12.5px;color:var(--ink3);display:flex;align-items:center;gap:7px}
+.rules i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:8px;color:#fff;flex-shrink:0;transition:all .15s}
+.rules li.ok{color:var(--ink2)}
+.rules li.ok i{background:#2E7D4F;border-color:#2E7D4F}
+.btn:disabled{opacity:.7;cursor:default}
+.dropdown{position:relative}
+.dd-btn{display:inline-flex;align-items:center;gap:8px}
+.dd-btn svg{transition:transform .15s}
+.btn-blue{background:var(--blue);border:1px solid var(--blue);color:#fff}
+.btn-blue:hover,.dd-btn[aria-expanded="true"]{background:#255578;border-color:#255578;color:#fff}
+.dd-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.dd-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:130px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(18,42,68,.12);padding:5px;z-index:50}
+.dd-menu.show{display:block}
+.dd-menu button{display:block;width:100%;text-align:left;border:none;background:none;font-family:var(--sans);font-size:14px;color:var(--ink);padding:9px 12px;border-radius:6px;cursor:pointer}
+.dd-menu button:hover,.dd-menu button:focus-visible{background:var(--blue100);color:var(--blue);outline:none}
+.btn:focus-visible,.x:focus-visible,.pwtoggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="mark">IR-WORKSHOP / PL</div>
+    <nav>
+      <a class="active" href="sse-hod-summary.html">Summary</a>
+      <a href="critical-tasks.html">Critical tasks</a>
+    </nav>
+    <div class="who">
+      Logged in as<strong id="userName">—</strong>
+      <button class="logout" onclick="logout()">Sign out</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topline">
+      <div class="titlewrap">
+        <h1>Live inspections</h1>
+        <span class="today" id="todayDate" aria-label="Today's date"></span>
+        <script>
+        // Independent of api.js/auth so the date always shows
+        (function () {
+          const el = document.getElementById("todayDate");
+          const show = () => el.textContent = new Date().toLocaleDateString("en-IN", {
+            weekday: "short", day: "numeric", month: "short", year: "numeric"
+          });
+          show();
+          setInterval(show, 60000); // rolls over at midnight if the page stays open
+        })();
+        </script>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-orange" onclick="openAssignModal()">Assign task</button>
+        <button class="btn btn-navy" onclick="openUserModal()">Create Staff User Account</button>
+      </div>
+    </div>
+    <p class="meta">Ongoing and completed assignments — today and previous 3 days</p>
+
+    <div class="stats">
+      <div class="stat"><div class="lbl">Live assignments</div><div class="num" id="statLive">—</div></div>
+      <div class="stat"><div class="lbl">Submitted today</div><div class="num" id="statDone">—</div></div>
+      <div class="stat"><div class="lbl">Total flagged params</div><div class="num" id="statFlagged">—</div></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters">
+      <div>
+        <label>Coach number</label>
+        <input id="fCoach" type="text" placeholder="e.g. 04512" oninput="applyFilters()">
+      </div>
+      <div>
+        <label>Coach type</label>
+        <select id="fType" onchange="applyFilters()">
+          <option value="">All types</option>
+          <option value="LHB">LHB</option>
+          <option value="NEW_LHB">New LHB</option>
+          <option value="THERMAL_LHB">Thermal LHB</option>
+          <option value="THERMAL_SG">Thermal SG</option>
+        </select>
+      </div>
+      <div>
+        <label>Status</label>
+        <select id="fStatus" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="ASSIGNED">Not started</option>
+          <option value="IN_PROGRESS">In progress</option>
+          <option value="SUBMITTED">Submitted</option>
+        </select>
+      </div>
+      <div>
+        <label>Date</label>
+        <input id="fDate" type="date" onchange="applyFilters()">
+      </div>
+      <button class="btn btn-ghost" onclick="clearFilters()">Clear</button>
+      <div class="dropdown" id="exportDd">
+        <button type="button" class="btn btn-blue dd-btn" id="exportBtn" aria-haspopup="menu" aria-expanded="false" aria-controls="exportMenu" onclick="toggleExport(event)">
+          Export As <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="dd-menu" id="exportMenu" role="menu" aria-labelledby="exportBtn">
+          <button type="button" role="menuitem" onclick="exportData('csv')">CSV</button>
+          <button type="button" role="menuitem" onclick="exportData('excel')">Excel</button>
+          <button type="button" role="menuitem" onclick="exportData('pdf')">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Coach</th><th>IW</th><th>Type</th>
+            <th>Status</th><th>Last saved</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="visitTbody"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts">
+      <div class="chart-card">
+        <h3>Assignments by coach type</h3>
+        <canvas id="chartType"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3>Submitted vs In Progress</h3>
+        <canvas id="chartStatus"></canvas>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Assign Task Modal -->
+<div class="modal-bg" id="assignModal">
+  <div class="modal">
+    <h2>Assign inspection task</h2>
+    <label>Coach number *</label>
+    <input id="aCoach" type="text" placeholder="e.g. 04512">
+    <label>Coach type *</label>
+    <select id="aType">
+      <option value="LHB">LHB</option>
+      <option value="NEW_LHB">New LHB</option>
+      <option value="THERMAL_LHB">Thermal LHB</option>
+      <option value="THERMAL_SG">Thermal SG</option>
+    </select>
+    <label>Section no.</label>
+    <input id="aSection" type="text" placeholder="e.g. 4">
+    <label>Overhaul type</label>
+    <select id="aOverhaul">
+      <option value="POH">POH</option>
+      <option value="IOH">IOH</option>
+    </select>
+    <label>Coach in date</label>
+    <input id="aInDate" type="date">
+    <label>Pre-inspection date</label>
+    <input id="aInspDate" type="date">
+    <label>Assign to (inspection staff) *</label>
+    <select id="aAssignTo"></select>
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="closeAssignModal()">Cancel</button>
+      <button class="btn btn-orange" onclick="submitAssignment()">Create assignment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Staff User Account Modal -->
+<div class="modal-bg" id="userModal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="userModalTitle">
+    <div class="modal-head">
+      <div>
+        <h2 id="userModalTitle">Create staff user account</h2>
+        <p class="sub">The staff member can sign in with these details right away.</p>
+      </div>
+      <button type="button" class="x" onclick="closeUserModal()" aria-label="Close">&times;</button>
+    </div>
+    <form id="userForm" novalidate autocomplete="off" onsubmit="submitStaffUser(event)">
+      <label for="uId">Staff ID *</label>
+      <input id="uId" name="staff_id" type="text" placeholder="e.g. RS-2214" maxlength="12" spellcheck="false" autocomplete="off">
+      <div class="fmsg" id="uIdMsg">Letters, a hyphen, then numbers.</div>
+
+      <label for="uEmail">Staff email ID *</label>
+      <input id="uEmail" name="staff_email_id" type="email" placeholder="name@example.com" spellcheck="false" autocomplete="off">
+      <div class="fmsg" id="uEmailMsg"></div>
+
+      <label for="uPw">Password *</label>
+      <div class="pwwrap">
+        <input id="uPw" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
+        <button type="button" class="pwtoggle" id="uPwToggle" aria-label="Show password" onclick="togglePw()">Show</button>
+      </div>
+      <div class="strength" aria-hidden="true">
+        <div class="segs"><span></span><span></span><span></span><span></span></div>
+        <div class="sword" id="uPwWord"></div>
+      </div>
+      <ul class="rules" id="uRules">
+        <li data-r="len"><i>✓</i>8+ characters</li>
+        <li data-r="upper"><i>✓</i>Uppercase letter</li>
+        <li data-r="lower"><i>✓</i>Lowercase letter</li>
+        <li data-r="num"><i>✓</i>A number</li>
+        <li data-r="sym"><i>✓</i>A symbol</li>
+      </ul>
+      <div class="fmsg" id="uPwMsg"></div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" onclick="resetUserForm()">Reset Form</button>
+        <button type="submit" class="btn btn-orange" id="uCreateBtn">Create User</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
+<script>
+requireAuth();
+const user = getUser();
+if (!user?.is_mgmt_staff) location.replace(IS_HOME); // only SSE / HOD accounts (is_mgmt_staff) may view this page
+
+document.getElementById("userName").textContent =
+  (user?.full_name || user?.username || "SSE/HOD") + " · SSE / HOD";
+
+let allVisits = [];
+
+// ── LOAD VISITS ──────────────────────────────
+async function loadVisits() {
+  const res = await apiFetch(`${API}/visits/`);
+  if (!res) return;
+  allVisits = await res.json();
+  renderTable(allVisits);
+  renderStats(allVisits);
+  renderCharts(allVisits);
+}
+
+// ── RENDER TABLE ─────────────────────────────
+function renderTable(visits) {
+  const tbody = document.getElementById("visitTbody");
+  if (!visits.length) {
+    tbody.innerHTML = `<tr><td colspan="6" class="loading">No assignments found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = visits.map(v => `
+    <tr onclick="openVisit(${v.id})" style="cursor:pointer">
+      <td class="coach">${esc(v.coach_number)}</td>
+      <td>${esc(v.assigned_to_name || "—")}</td>
+      <td>${esc(v.coach_type)}</td>
+      <td>${statusPill(v.status, v.flagged_count)}</td>
+      <td class="ts">${fmtDateTime(v.last_saved_on)}</td>
+      <td class="arrow">›</td>
+    </tr>
+  `).join("");
+}
+
+function statusPill(s, flagged) {
+  if (flagged > 0 && s === "IN_PROGRESS")
+    return `<span class="pill pill-orange">${flagged} flagged param${flagged > 1 ? "s" : ""}</span>`;
+  if (s === "ASSIGNED")
+    return `<span class="pill pill-gray">Not started</span>`;
+  if (s === "SUBMITTED")
+    return `<span class="pill pill-blue">Submitted</span>`;
+  return `<span class="pill pill-gray">In progress</span>`;
+}
+
+// ── STATS ────────────────────────────────────
+function renderStats(visits) {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById("statLive").textContent =
+    visits.filter(v => v.status !== "SUBMITTED").length;
+  document.getElementById("statDone").textContent =
+    visits.filter(v => v.status === "SUBMITTED" &&
+      v.submitted_on?.slice(0, 10) === today).length;
+  document.getElementById("statFlagged").textContent =
+    visits.reduce((acc, v) => acc + (v.flagged_count || 0), 0);
+}
+
+// ── CHARTS ───────────────────────────────────
+let chartTypeInst = null, chartStatusInst = null;
+
+function renderCharts(visits) {
+  if (typeof Chart === "undefined") return;   // Chart.js CDN not reachable (offline): skip charts, keep the rest working
+  // By coach type
+  const typeCount = {};
+  visits.forEach(v => { typeCount[v.coach_type] = (typeCount[v.coach_type] || 0) + 1; });
+
+  if (chartTypeInst) chartTypeInst.destroy();
+  chartTypeInst = new Chart(document.getElementById("chartType"), {
+    type: "bar",
+    data: {
+      labels: Object.keys(typeCount),
+      datasets: [{
+        label: "Assignments",
+        data:  Object.values(typeCount),
+        backgroundColor: ["#122A44","#2F6690","#E8871E","#5A8FAF"],
+        borderRadius: 5,
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } },
+    }
+  });
+
+  // By status
+  const inProg   = visits.filter(v => v.status !== "SUBMITTED").length;
+  const submitted = visits.filter(v => v.status === "SUBMITTED").length;
+
+  if (chartStatusInst) chartStatusInst.destroy();
+  chartStatusInst = new Chart(document.getElementById("chartStatus"), {
+    type: "doughnut",
+    data: {
+      labels: ["In Progress", "Submitted"],
+      datasets: [{
+        data: [inProg, submitted],
+        backgroundColor: ["#E8871E","#2F6690"],
+        borderWidth: 0,
+      }]
+    },
+    options: { plugins: { legend: { position: "bottom" } }, cutout: "65%" }
+  });
+}
+
+// ── FILTERS ──────────────────────────────────
+function applyFilters() {
+  let filtered = [...allVisits];
+  const coach  = document.getElementById("fCoach").value.trim().toLowerCase();
+  const type   = document.getElementById("fType").value;
+  const status = document.getElementById("fStatus").value;
+  const date   = document.getElementById("fDate").value;
+
+  if (coach)  filtered = filtered.filter(v => v.coach_number.toLowerCase().includes(coach));
+  if (type)   filtered = filtered.filter(v => v.coach_type === type);
+  if (status) filtered = filtered.filter(v => v.status === status);
+  if (date)   filtered = filtered.filter(v => v.pre_inspection_date === date);
+
+  renderTable(filtered);
+}
+
+function clearFilters() {
+  ["fCoach","fType","fStatus","fDate"].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = "";
+  });
+  renderTable(allVisits);
+}
+
+// ── NAVIGATION ───────────────────────────────
+function openVisit(id) {
+  window.location.href = `is-main-entry.html?visit_id=${id}&readonly=1`;
+}
+
+// ── ASSIGN MODAL ─────────────────────────────
+async function openAssignModal() {
+  const res = await apiFetch(`${API}/users/`);          // inspection staff list
+  const staff = res ? await res.json() : [];
+  document.getElementById("aAssignTo").innerHTML = '<option value="">Select inspection staff</option>' +
+    staff.map(u => `<option value="${u.id}">${esc(u.full_name)} (${esc(u.login_id)})</option>`).join("");
+  document.getElementById("assignModal").classList.add("show");
+}
+function closeAssignModal() { document.getElementById("assignModal").classList.remove("show"); }
+
+async function submitAssignment() {
+  const body = {
+    coach_number:        document.getElementById("aCoach").value.trim(),
+    coach_type:          document.getElementById("aType").value,
+    section_no:          document.getElementById("aSection").value.trim(),
+    overhaul_type:       document.getElementById("aOverhaul").value,
+    coach_in_date:       document.getElementById("aInDate").value || null,
+    pre_inspection_date: document.getElementById("aInspDate").value || null,
+    assigned_to:         parseInt(document.getElementById("aAssignTo").value) || null,
+  };
+
+  if (!body.coach_number || !body.assigned_to) {
+    showToast("Coach number and inspection staff are required.", "error"); return;
+  }
+
+  const res = await apiFetch(`${API}/visits/`, {
+    method: "POST",
+    body:   JSON.stringify(body),
+  });
+  if (!res) return;
+
+  if (res.ok) {
+    showToast("Assignment created successfully.");
+    closeAssignModal();
+    loadVisits();
+  } else {
+    const err = await res.json();
+    showToast("Error: " + JSON.stringify(err), "error");
+  }
+}
+
+// ── CREATE STAFF USER MODAL ──────────────────
+const PW_RULES = {
+  len:   v => v.length >= 8,
+  upper: v => /[A-Z]/.test(v),
+  lower: v => /[a-z]/.test(v),
+  num:   v => /\d/.test(v),
+  sym:   v => /[^A-Za-z0-9]/.test(v),
+};
+const pwScore = v => Object.values(PW_RULES).filter(f => f(v)).length;
+
+const UF = {
+  staff_id:       { el: "uId",    msg: "uIdMsg",    help: "Letters, a hyphen, then numbers.",
+    val: () => document.getElementById("uId").value.trim().toUpperCase(),
+    check: v => !v ? "Enter the staff ID."
+      : !/^[A-Z]{2,4}-\d{3,6}$/.test(v) ? "Use the format RS-2214 (2–4 letters, hyphen, 3–6 digits)." : "" },
+  staff_email_id: { el: "uEmail", msg: "uEmailMsg", help: "",
+    val: () => document.getElementById("uEmail").value.trim().toLowerCase(),
+    check: v => !v ? "Enter the email ID."
+      : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "Enter a valid email, like name@example.com." : "" },
+  password:       { el: "uPw",    msg: "uPwMsg",    help: "",
+    val: () => document.getElementById("uPw").value,
+    check: v => !v ? "Create a password."
+      : pwScore(v) < 5 ? "Password must meet all the requirements above." : "" },
+};
+const uTouched = {};
+
+function showFieldState(name, error) {
+  const f = UF[name], el = document.getElementById(f.el), m = document.getElementById(f.msg);
+  el.classList.toggle("invalid", !!error);
+  el.setAttribute("aria-invalid", error ? "true" : "false");
+  m.textContent = error || f.help;
+  m.classList.toggle("err", !!error);
+}
+function validateUserField(name, show) {
+  const error = UF[name].check(UF[name].val());
+  if (show) showFieldState(name, error);
+  return !error;
+}
+function updateStrength(v) {
+  document.querySelectorAll("#uRules li").forEach(li => li.classList.toggle("ok", PW_RULES[li.dataset.r](v)));
+  const sc = pwScore(v), lvl = !v ? 0 : sc <= 2 ? 1 : sc === 3 ? 2 : sc === 4 ? 3 : 4;
+  const cols = ["", "#D9776B", "#E8871E", "#5B95BF", "#2E7D4F"], words = ["", "Weak", "Fair", "Good", "Strong"];
+  document.querySelectorAll(".segs span").forEach((s, i) => s.style.background = i < lvl ? cols[lvl] : "");
+  const w = document.getElementById("uPwWord"); w.textContent = words[lvl]; w.style.color = cols[lvl];
+}
+Object.keys(UF).forEach(name => {
+  const el = document.getElementById(UF[name].el);
+  el.addEventListener("blur", () => { uTouched[name] = true; validateUserField(name, true); });
+  el.addEventListener("input", () => {
+    if (name === "staff_id") el.value = el.value.toUpperCase();
+    if (name === "password") updateStrength(el.value);
+    if (uTouched[name]) validateUserField(name, true);
+  });
+});
+
+function togglePw() {
+  const el = document.getElementById("uPw"), b = document.getElementById("uPwToggle");
+  const show = el.type === "password";
+  el.type = show ? "text" : "password";
+  b.textContent = show ? "Hide" : "Show";
+  b.setAttribute("aria-label", show ? "Hide password" : "Show password");
+}
+function resetUserForm() {
+  document.getElementById("userForm").reset();
+  Object.keys(UF).forEach(n => { uTouched[n] = false; showFieldState(n, ""); document.getElementById(UF[n].el).removeAttribute("aria-invalid"); });
+  document.getElementById("uPw").type = "password";
+  document.getElementById("uPwToggle").textContent = "Show";
+  updateStrength("");
+  document.getElementById("uId").focus();
+}
+function openUserModal()  { document.getElementById("userModal").classList.add("show"); resetUserForm(); }
+function closeUserModal() { document.getElementById("userModal").classList.remove("show"); }
+
+async function submitStaffUser(e) {
+  e.preventDefault();
+  let firstBad = null;
+  Object.keys(UF).forEach(n => {
+    uTouched[n] = true;
+    if (!validateUserField(n, true) && !firstBad) firstBad = document.getElementById(UF[n].el);
+  });
+  if (firstBad) { firstBad.focus(); showToast("Fix the highlighted fields and try again.", "error"); return; }
+
+  const body = {
+    staff_id:       UF.staff_id.val(),
+    staff_email_id: UF.staff_email_id.val(),
+    password:       UF.password.val(),
+  };
+  const btn = document.getElementById("uCreateBtn");
+  btn.disabled = true; btn.textContent = "Creating…";
+  try {
+    const res = await apiFetch(`${API}/users/`, { method: "POST", body: JSON.stringify(body) });
+    if (!res) return;
+    if (res.ok) {
+      showToast("Staff user " + body.staff_id + " created.");
+      closeUserModal();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      let shown = false;
+      Object.keys(UF).forEach(n => {
+        if (err[n]) { showFieldState(n, [].concat(err[n]).join(" ")); shown = true; }
+      });
+      if (!shown) showToast("Error: " + (err.detail || JSON.stringify(err)), "error");
+    }
+  } finally {
+    btn.disabled = false; btn.textContent = "Create User";
+  }
+}
+
+// Close modals with Escape or a click on the backdrop
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { closeUserModal(); closeAssignModal(); closeExport(); }
+});
+["userModal", "assignModal"].forEach(id => {
+  document.getElementById(id).addEventListener("mousedown", e => {
+    if (e.target.id === id) id === "userModal" ? closeUserModal() : closeAssignModal();
+  });
+});
+
+// ── EXPORT DROPDOWN ──────────────────────────
+function toggleExport(e) {
+  e.stopPropagation();
+  const menu = document.getElementById("exportMenu");
+  const open = !menu.classList.contains("show");
+  menu.classList.toggle("show", open);
+  document.getElementById("exportBtn").setAttribute("aria-expanded", open);
+  if (open) menu.querySelector("button").focus();
+}
+function closeExport() {
+  document.getElementById("exportMenu").classList.remove("show");
+  document.getElementById("exportBtn").setAttribute("aria-expanded", "false");
+}
+document.addEventListener("click", e => {
+  if (!document.getElementById("exportDd").contains(e.target)) closeExport();
+});
+document.getElementById("exportMenu").addEventListener("keydown", e => {
+  const items = [...document.querySelectorAll("#exportMenu button")];
+  const i = items.indexOf(document.activeElement);
+  if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  if (e.key === "ArrowUp")   { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  if (e.key === "Escape")    { closeExport(); document.getElementById("exportBtn").focus(); }
+});
+
+// ── EXPORT ───────────────────────────────────
+function exportData(format) {
+  closeExport();
+  demoExport(format);   // real CSV / Excel / PDF generated in the browser
+}
+
+// ── LOGOUT ───────────────────────────────────
+function logout() {
+  clearSession();
+  window.location.href = "login.html";
+}
+
+// ── INIT ─────────────────────────────────────
+loadVisits();
+// Auto-refresh every 60 seconds
+setInterval(loadVisits, 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign In — IR Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#122A44; --navy-2:#1C3A5A; --blue:#2F6690; --orange:#E8871E;
+  --bg:#F6F7F9; --panel:#FFFFFF;
+  --ink:#16232E; --ink-2:#4A5A6A; --ink-3:#7E8B98;
+  --line:#E2E6EA; --blue-100:#E9F0F5;
+  --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{min-height:100vh;display:grid;grid-template-columns:1fr 430px}
+.brandside{background:var(--navy);color:#fff;padding:60px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.brandside .bars{position:absolute;right:-40px;top:50%;transform:translateY(-50%);display:flex;gap:14px;opacity:.9}
+.brandside .bars div{width:34px;height:220px;border-radius:3px}
+.brandside .bars div:nth-child(1){background:var(--orange)}
+.brandside .bars div:nth-child(2){background:var(--blue)}
+.brandside .bars div:nth-child(3){background:var(--navy-2)}
+.brandside .mark{font-size:13px;font-weight:600;letter-spacing:.05em;color:#93A8BC;position:relative;z-index:1}
+.brandside h1{font-size:32px;font-weight:600;line-height:1.25;max-width:9ch;margin:0;position:relative;z-index:1}
+.brandside .sub{color:#B9C8D6;font-size:14.5px;max-width:32ch;margin-top:14px;position:relative;z-index:1}
+.brandside .foot{font-size:12.5px;color:#7C93A8;position:relative;z-index:1}
+
+.formside{display:flex;align-items:center;justify-content:center;padding:40px}
+.card{width:100%;max-width:340px}
+.card h2{font-size:20px;font-weight:600;margin:0 0 6px}
+.card .lede{color:var(--ink-3);font-size:13.5px;margin:0 0 28px}
+
+.role-toggle{display:flex;border:1px solid var(--line);border-radius:8px;padding:3px;margin-bottom:22px;background:var(--bg)}
+.role-toggle button{flex:1;border:none;background:none;padding:9px 0;font-size:13.5px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-family:var(--sans);font-weight:500}
+.role-toggle button.active{background:var(--navy);color:#fff}
+
+label{display:block;font-size:13px;color:var(--ink-2);margin:0 0 6px;font-weight:500}
+input{width:100%;border:1px solid var(--line);border-radius:7px;padding:11px 13px;font-size:14px;font-family:var(--sans);background:#fff;color:var(--ink);margin-bottom:16px}
+input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-100)}
+
+.error{display:none;background:#FBEAE7;color:#9C2B1F;font-size:13px;padding:9px 12px;border-radius:7px;margin-bottom:16px}
+.error.show{display:block}
+
+button.submit{width:100%;background:var(--orange);color:#3A2200;border:none;border-radius:7px;padding:12px 0;font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+button.submit:hover{background:#D97A16}
+
+.hint{font-size:12.5px;color:var(--ink-3);margin-top:18px}
+
+@media (max-width:780px){ .wrap{grid-template-columns:1fr} .brandside{display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brandside">
+    <div class="mark">IR-WORKSHOP / PL</div>
+    <div>
+      <h1>DIMS - Digital Inspection Management System</h1>
+      <p class="sub">Digital pre-inspection and final-inspection records for LHB coaches, in one place.</p>
+    </div>
+    <div class="foot">Western Railway · RAC / PCO / PL</div>
+    <div class="bars"><div></div><div></div><div></div></div>
+  </div>
+
+  <div class="formside">
+    <div class="card">
+      <h2>Sign In</h2>
+      <p class="lede">Use the login ID assigned to you.</p>
+
+      <div class="role-toggle">
+        <button type="button" class="active" data-role="is">Inspection Staff</button>
+        <button type="button" data-role="sse">SSE / HOD</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <label for="loginId">Login ID</label>
+        <input id="loginId" type="text" placeholder="e.g. RS-2214" autocomplete="username">
+
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
+
+        <div class="error" id="loginError">Enter both a login ID and a password.</div>
+
+        <button type="submit" class="submit">Sign In</button>
+      </form>
+
+      <div class="hint">Signing in as: <span id="roleLabel">Inspection worker</span></div>
+      <div class="hint" id="demoHint">Demo accounts, password <strong>demo123</strong>: RS-2214 (Inspection Staff) · SK-1001 (SSE / HOD)<br><a href="#" id="resetDemo" style="color:var(--blue)">Reset demo data</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="api.js"></script>
+<script>
+let role = 'is';
+document.querySelectorAll('.role-toggle button').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.role-toggle button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    role = btn.dataset.role;
+    document.getElementById('roleLabel').textContent = role === 'is' ? 'Inspection worker' : 'SSE / HOD';
+  };
+});
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = document.getElementById('loginId').value.trim();
+  const pw = document.getElementById('password').value.trim();
+  const err = document.getElementById('loginError');
+  const btn = e.target.querySelector('button.submit');
+  if (!id || !pw) { err.textContent = 'Enter both a login ID and a password.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const user = await authenticate(id, pw);
+    window.location.href = user.is_mgmt_staff ? MGMT_HOME : IS_HOME;   // the account's own role decides
+  } catch (ex) {
+    err.textContent = ex.message; err.classList.add('show');
+    btn.disabled = false; btn.textContent = 'Sign In';
+  }
+});
+if (!DEMO_DATA) document.getElementById('demoHint').style.display = 'none';
+document.getElementById('resetDemo').onclick = e => { e.preventDefault(); resetDemo(); e.target.textContent = 'Demo data reset ✓'; };
+</script>
+</body>
+</html>
