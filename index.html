@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign In — IR Workshop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --navy:#122A44; --navy-2:#1C3A5A; --blue:#2F6690; --orange:#E8871E;
@@ -16,52 +17,306 @@
 }
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{min-height:100vh;display:grid;grid-template-columns:1fr 430px}
-.brandside{background:var(--navy);color:#fff;padding:60px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.brandside .bars{position:absolute;right:-40px;top:50%;transform:translateY(-50%);display:flex;gap:14px;opacity:.9}
-.brandside .bars div{width:34px;height:220px;border-radius:3px}
+.wrap{min-height:100vh;display:grid;grid-template-columns:minmax(0,1fr) clamp(430px,34vw,470px)}
+
+/* ============ BRAND SIDE ============ */
+.brandside{
+  position:relative;overflow:hidden;
+  background:
+    radial-gradient(900px 500px at 12% -10%, rgba(47,102,144,.55), transparent 60%),
+    radial-gradient(700px 500px at 105% 110%, rgba(232,135,30,.18), transparent 55%),
+    linear-gradient(160deg, #0D2036 0%, var(--navy) 45%, var(--navy-2) 100%);
+  color:#fff;padding:60px;display:flex;flex-direction:column;justify-content:space-between;
+}
+.brandside::before{
+  /* faint blueprint grid */
+  content:"";position:absolute;inset:0;opacity:.15;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px);
+  background-size:44px 44px;
+  mask-image:radial-gradient(ellipse 90% 70% at 30% 30%, #000 40%, transparent 85%);
+}
+.spot{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(420px 420px at var(--mx,30%) var(--my,20%), rgba(255,255,255,.08), transparent 60%);
+  transition:background .25s ease;
+}
+
+.brandside .top{position:relative;z-index:2}
+.mark{
+  font-size:12.5px;font-weight:700;letter-spacing:.14em;color:#9FB3C6;
+  display:inline-flex;align-items:center;gap:9px;
+  animation:fadeUp .7s ease both;
+}
+.mark::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 3px rgba(232,135,30,.25)}
+
+.brandside .heading{position:relative;z-index:2;margin-top:26px}
+.brandside h1{
+  font-size:33px;font-weight:700;line-height:1.22;max-width:13ch;margin:0;
+  letter-spacing:-.01em;overflow-wrap:normal;word-break:normal;
+  background:linear-gradient(90deg,#fff, #DCE9F3 65%, #fff);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:fadeUp .8s .08s ease both;
+}
+.brandside .sub{
+  color:#B9C8D6;font-size:14.5px;max-width:33ch;margin-top:14px;
+  animation:fadeUp .8s .18s ease both;
+}
+
+/* railway scene */
+.scene{position:relative;z-index:1;margin:34px 0 8px;height:150px}
+.scene svg{width:100%;height:100%;display:block;overflow:visible}
+.ember{animation:rise linear infinite}
+.train-group{animation:drift 26s linear infinite}
+@keyframes drift{
+  0%{transform:translateX(-6%)}
+  50%{transform:translateX(3%)}
+  100%{transform:translateX(-6%)}
+}
+.wheel{transform-box:fill-box;transform-origin:center;animation:spin 1.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rise{
+  0%{transform:translateY(0);opacity:0}
+  10%{opacity:.9}
+  100%{transform:translateY(-70px);opacity:0}
+}
+.sweep{animation:sweep 6s ease-in-out infinite}
+@keyframes sweep{
+  0%,100%{opacity:0}
+  45%{opacity:0}
+  50%{opacity:.55}
+  55%{opacity:0}
+}
+
+.brandside .bars{display:flex;gap:10px;position:relative;z-index:2;margin-top:6px}
+.brandside .bars div{width:30px;height:5px;border-radius:3px;transform-origin:left;animation:grow 1s .5s ease both}
 .brandside .bars div:nth-child(1){background:var(--orange)}
-.brandside .bars div:nth-child(2){background:var(--blue)}
-.brandside .bars div:nth-child(3){background:var(--navy-2)}
-.brandside .mark{font-size:13px;font-weight:600;letter-spacing:.05em;color:#93A8BC;position:relative;z-index:1}
-.brandside h1{font-size:32px;font-weight:600;line-height:1.25;max-width:9ch;margin:0;position:relative;z-index:1}
-.brandside .sub{color:#B9C8D6;font-size:14.5px;max-width:32ch;margin-top:14px;position:relative;z-index:1}
-.brandside .foot{font-size:12.5px;color:#7C93A8;position:relative;z-index:1}
+.brandside .bars div:nth-child(2){background:var(--blue);animation-delay:.62s}
+.brandside .bars div:nth-child(3){background:#5E7F9C;animation-delay:.74s}
+@keyframes grow{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
 
-.formside{display:flex;align-items:center;justify-content:center;padding:40px}
-.card{width:100%;max-width:340px}
-.card h2{font-size:20px;font-weight:600;margin:0 0 6px}
-.card .lede{color:var(--ink-3);font-size:13.5px;margin:0 0 28px}
+.brandside .foot{
+  font-size:12.5px;color:#8098AE;position:relative;z-index:2;
+  display:flex;align-items:center;gap:10px;
+  animation:fadeUp .8s .3s ease both;
+}
+.foot .dot{width:5px;height:5px;border-radius:50%;background:#516F87}
 
-.role-toggle{display:flex;border:1px solid var(--line);border-radius:8px;padding:3px;margin-bottom:22px;background:var(--bg)}
-.role-toggle button{flex:1;border:none;background:none;padding:9px 0;font-size:13.5px;border-radius:6px;cursor:pointer;color:var(--ink-2);font-family:var(--sans);font-weight:500}
-.role-toggle button.active{background:var(--navy);color:#fff}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
+/* ============ FORM SIDE ============ */
+.formside{
+  position:relative;display:flex;align-items:center;justify-content:center;padding:40px;
+  background:
+    radial-gradient(600px 420px at 110% -10%, rgba(47,102,144,.08), transparent 60%),
+    var(--panel);
+}
+.formside::before{
+  /* faint wheel-motif watermark */
+  content:"";position:absolute;right:-90px;bottom:-90px;width:280px;height:280px;border-radius:50%;
+  border:22px solid var(--blue-100);opacity:.5;pointer-events:none;
+}
+.formside::after{
+  content:"";position:absolute;right:-90px;bottom:-90px;width:280px;height:280px;border-radius:50%;
+  background:
+    repeating-conic-gradient(from 0deg, var(--blue-100) 0deg 4deg, transparent 4deg 45deg);
+  opacity:.35;pointer-events:none;
+}
+
+.card{width:100%;max-width:340px;position:relative;z-index:1;animation:cardIn .55s ease both}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card h2{font-size:21px;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
+.card .lede{color:var(--ink-3);font-size:13.5px;margin:0 0 26px}
+
+.field{position:relative;margin-bottom:16px}
 label{display:block;font-size:13px;color:var(--ink-2);margin:0 0 6px;font-weight:500}
-input{width:100%;border:1px solid var(--line);border-radius:7px;padding:11px 13px;font-size:14px;font-family:var(--sans);background:#fff;color:var(--ink);margin-bottom:16px}
+.field .icon{
+  position:absolute;left:13px;top:35px;width:16px;height:16px;color:var(--ink-3);pointer-events:none;
+}
+input{
+  width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 13px 11px 37px;font-size:14px;
+  font-family:var(--sans);background:#fff;color:var(--ink);transition:border-color .15s ease, box-shadow .15s ease;
+}
 input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-100)}
+.field.pw input{padding-right:38px}
+.eye{
+  position:absolute;right:11px;top:35px;width:18px;height:18px;cursor:pointer;color:var(--ink-3);
+  background:none;border:none;padding:0;display:flex;align-items:center;justify-content:center;
+}
+.eye:hover{color:var(--ink-2)}
+.capslock{
+  display:none;align-items:center;gap:6px;font-size:12px;color:#9C6A1F;background:#FDF3E6;
+  border-radius:6px;padding:6px 9px;margin:-6px 0 14px;
+}
+.capslock.show{display:flex}
 
-.error{display:none;background:#FBEAE7;color:#9C2B1F;font-size:13px;padding:9px 12px;border-radius:7px;margin-bottom:16px}
-.error.show{display:block}
+.error{display:none;background:#FBEAE7;color:#9C2B1F;font-size:13px;padding:9px 12px;border-radius:7px;margin-bottom:16px;align-items:center;gap:8px}
+.error.show{display:flex}
 
-button.submit{width:100%;background:var(--orange);color:#3A2200;border:none;border-radius:7px;padding:12px 0;font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--sans)}
-button.submit:hover{background:#D97A16}
+button.submit{
+  width:100%;position:relative;overflow:hidden;
+  background:linear-gradient(100deg, var(--orange), #F0994A);
+  color:#3A2200;border:none;border-radius:8px;padding:12.5px 0;font-size:14.5px;font-weight:700;
+  cursor:pointer;font-family:var(--sans);letter-spacing:.01em;
+  box-shadow:0 6px 16px rgba(232,135,30,.28);
+  transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+button.submit:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(232,135,30,.36)}
+button.submit:active{transform:translateY(0)}
+button.submit:disabled{cursor:default;filter:saturate(.7)}
+button.submit::after{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+  transform:skewX(-20deg);animation:shimmer 2.6s ease-in-out infinite;
+}
+@keyframes shimmer{0%{left:-60%}55%,100%{left:130%}}
 
 .hint{font-size:12.5px;color:var(--ink-3);margin-top:18px}
+.hint strong{color:var(--ink-2)}
+.hint strong.pending{color:var(--ink-3);font-weight:500}
+#demoHint{
+  background:var(--bg);border:1px dashed var(--line);border-radius:8px;padding:10px 12px;margin-top:10px;
+}
+#resetDemo{color:var(--blue);text-decoration:none;font-weight:500}
+#resetDemo:hover{text-decoration:underline}
 
-@media (max-width:780px){ .wrap{grid-template-columns:1fr} .brandside{display:none} }
+@media (prefers-reduced-motion: reduce){
+  .train-group,.wheel,.sweep,.ember,.mark,.brandside h1,.brandside .sub,.brandside .bars div,.brandside .foot,.card{animation:none !important}
+}
+@media (max-width:900px){
+  .wrap{grid-template-columns:1fr}
+  .brandside{display:none}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="brandside">
-    <div class="mark">IR-WORKSHOP / PL</div>
-    <div>
-      <h1>DIMS - Digital Inspection Management System</h1>
-      <p class="sub">Digital pre-inspection and final-inspection records for LHB coaches, in one place.</p>
+  <div class="brandside" id="brandside">
+    <div class="spot" id="spot"></div>
+
+    <div class="top">
+      <div class="mark">IR-WORKSHOP / PL</div>
+      <div class="heading">
+        <h1>DIMS - Digital Inspection Management System</h1>
+        <p class="sub">Digital pre-inspection and final-inspection records for LHB coaches, in one place.</p>
+      </div>
     </div>
-    <div class="foot">Western Railway · RAC / PCO / PL</div>
+
+    <div class="scene" aria-hidden="true">
+      <svg viewBox="0 0 560 150" preserveAspectRatio="none">
+        <!-- overhead electrification -->
+        <line x1="0" y1="14" x2="560" y2="14" stroke="#3E5C78" stroke-width="1.5"/>
+        <g stroke="#3E5C78" stroke-width="1.5">
+          <line x1="40" y1="0" x2="40" y2="20"/><line x1="40" y1="0" x2="26" y2="16"/><line x1="40" y1="0" x2="54" y2="16"/>
+          <line x1="200" y1="0" x2="200" y2="20"/><line x1="200" y1="0" x2="186" y2="16"/><line x1="200" y1="0" x2="214" y2="16"/>
+          <line x1="360" y1="0" x2="360" y2="20"/><line x1="360" y1="0" x2="346" y2="16"/><line x1="360" y1="0" x2="374" y2="16"/>
+          <line x1="520" y1="0" x2="520" y2="20"/><line x1="520" y1="0" x2="506" y2="16"/><line x1="520" y1="0" x2="534" y2="16"/>
+        </g>
+
+        <!-- workshop shed roofline with lit bays -->
+        <polyline points="0,52 30,30 60,52 90,30 120,52 150,30 180,52 210,30 240,52 270,30 300,52 330,30 360,52 390,30 420,52 450,30 480,52 510,30 540,52 560,44"
+          fill="none" stroke="#26466A" stroke-width="2" opacity=".8"/>
+        <g fill="#E8871E" opacity=".55">
+          <rect x="12" y="40" width="4" height="8" class="sweep"/>
+          <rect x="72" y="40" width="4" height="8" class="sweep" style="animation-delay:1.1s"/>
+          <rect x="132" y="40" width="4" height="8" class="sweep" style="animation-delay:2.2s"/>
+          <rect x="252" y="40" width="4" height="8" class="sweep" style="animation-delay:3.3s"/>
+          <rect x="372" y="40" width="4" height="8" class="sweep" style="animation-delay:.6s"/>
+          <rect x="492" y="40" width="4" height="8" class="sweep" style="animation-delay:1.8s"/>
+        </g>
+
+        <!-- ground line -->
+        <line x1="0" y1="112" x2="560" y2="112" stroke="#2C4A68" stroke-width="1"/>
+
+        <!-- LHB train -->
+        <g class="train-group">
+          <g transform="translate(20,64)">
+            <!-- 4 coaches -->
+            <g fill="#1C3A5A" stroke="#3E5C78" stroke-width="1">
+              <rect x="0"   y="0" width="118" height="34" rx="6"/>
+              <rect x="126" y="0" width="118" height="34" rx="6"/>
+              <rect x="252" y="0" width="118" height="34" rx="6"/>
+              <rect x="378" y="0" width="118" height="34" rx="6"/>
+            </g>
+            <!-- livery stripe -->
+            <g fill="#2F6690">
+              <rect x="0" y="21" width="118" height="5"/>
+              <rect x="126" y="21" width="118" height="5"/>
+              <rect x="252" y="21" width="118" height="5"/>
+              <rect x="378" y="21" width="118" height="5"/>
+            </g>
+            <g fill="#E8871E" opacity=".85">
+              <rect x="0" y="26" width="118" height="2"/>
+              <rect x="126" y="26" width="118" height="2"/>
+              <rect x="252" y="26" width="118" height="2"/>
+              <rect x="378" y="26" width="118" height="2"/>
+            </g>
+            <!-- windows -->
+            <g fill="#8FB3CE" opacity=".85">
+              <rect x="8"   y="6" width="13" height="11" rx="2"/><rect x="26"  y="6" width="13" height="11" rx="2"/>
+              <rect x="44"  y="6" width="13" height="11" rx="2"/><rect x="62"  y="6" width="13" height="11" rx="2"/>
+              <rect x="80"  y="6" width="13" height="11" rx="2"/><rect x="98"  y="6" width="13" height="11" rx="2"/>
+
+              <rect x="134" y="6" width="13" height="11" rx="2"/><rect x="152" y="6" width="13" height="11" rx="2"/>
+              <rect x="170" y="6" width="13" height="11" rx="2"/><rect x="188" y="6" width="13" height="11" rx="2"/>
+              <rect x="206" y="6" width="13" height="11" rx="2"/><rect x="224" y="6" width="13" height="11" rx="2"/>
+
+              <rect x="260" y="6" width="13" height="11" rx="2"/><rect x="278" y="6" width="13" height="11" rx="2"/>
+              <rect x="296" y="6" width="13" height="11" rx="2"/><rect x="314" y="6" width="13" height="11" rx="2"/>
+              <rect x="332" y="6" width="13" height="11" rx="2"/><rect x="350" y="6" width="13" height="11" rx="2"/>
+
+              <rect x="386" y="6" width="13" height="11" rx="2"/><rect x="404" y="6" width="13" height="11" rx="2"/>
+              <rect x="422" y="6" width="13" height="11" rx="2"/><rect x="440" y="6" width="13" height="11" rx="2"/>
+              <rect x="458" y="6" width="13" height="11" rx="2"/><rect x="476" y="6" width="13" height="11" rx="2"/>
+            </g>
+            <!-- doors -->
+            <g fill="#152C46">
+              <rect x="112" y="4" width="6" height="28"/><rect x="120" y="4" width="6" height="28"/>
+              <rect x="238" y="4" width="6" height="28"/><rect x="246" y="4" width="6" height="28"/>
+              <rect x="364" y="4" width="6" height="28"/><rect x="372" y="4" width="6" height="28"/>
+            </g>
+            <!-- bogies + wheels -->
+            <g fill="#0E2038">
+              <rect x="14" y="33" width="34" height="6" rx="2"/><rect x="74" y="33" width="34" height="6" rx="2"/>
+              <rect x="140" y="33" width="34" height="6" rx="2"/><rect x="200" y="33" width="34" height="6" rx="2"/>
+              <rect x="266" y="33" width="34" height="6" rx="2"/><rect x="326" y="33" width="34" height="6" rx="2"/>
+              <rect x="392" y="33" width="34" height="6" rx="2"/><rect x="452" y="33" width="34" height="6" rx="2"/>
+            </g>
+            <g fill="#0A1A2E" stroke="#3E5C78" stroke-width="1">
+              <circle class="wheel" cx="22" cy="40" r="5"/><circle class="wheel" cx="40" cy="40" r="5"/>
+              <circle class="wheel" cx="82" cy="40" r="5"/><circle class="wheel" cx="100" cy="40" r="5"/>
+              <circle class="wheel" cx="148" cy="40" r="5"/><circle class="wheel" cx="166" cy="40" r="5"/>
+              <circle class="wheel" cx="208" cy="40" r="5"/><circle class="wheel" cx="226" cy="40" r="5"/>
+              <circle class="wheel" cx="274" cy="40" r="5"/><circle class="wheel" cx="292" cy="40" r="5"/>
+              <circle class="wheel" cx="334" cy="40" r="5"/><circle class="wheel" cx="352" cy="40" r="5"/>
+              <circle class="wheel" cx="400" cy="40" r="5"/><circle class="wheel" cx="418" cy="40" r="5"/>
+              <circle class="wheel" cx="460" cy="40" r="5"/><circle class="wheel" cx="478" cy="40" r="5"/>
+            </g>
+          </g>
+        </g>
+
+        <!-- floor reflection -->
+        <rect x="0" y="113" width="560" height="18" fill="url(#refl)" opacity=".25"/>
+        <defs>
+          <linearGradient id="refl" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2F6690"/>
+            <stop offset="1" stop-color="#122A44" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+
+        <!-- embers -->
+        <g fill="#E8871E">
+          <circle class="ember" cx="120" cy="108" r="1.6" style="animation-duration:3.4s;animation-delay:.2s"/>
+          <circle class="ember" cx="260" cy="108" r="1.3" style="animation-duration:4.1s;animation-delay:1.4s"/>
+          <circle class="ember" cx="400" cy="108" r="1.8" style="animation-duration:3.7s;animation-delay:.8s"/>
+          <circle class="ember" cx="480" cy="108" r="1.2" style="animation-duration:4.6s;animation-delay:2.1s"/>
+        </g>
+      </svg>
+    </div>
+
     <div class="bars"><div></div><div></div><div></div></div>
+    <div class="foot">Western Railway <span class="dot"></span> RAC / PCO / PL</div>
   </div>
 
   <div class="formside">
@@ -69,54 +324,106 @@ button.submit:hover{background:#D97A16}
       <h2>Sign In</h2>
       <p class="lede">Use the login ID assigned to you.</p>
 
-      <div class="role-toggle">
-        <button type="button" class="active" data-role="is">Inspection Staff</button>
-        <button type="button" data-role="sse">SSE / HOD</button>
-      </div>
-
       <form id="loginForm" novalidate>
-        <label for="loginId">Login ID</label>
-        <input id="loginId" type="text" placeholder="e.g. IS-1001" autocomplete="username">
+        <div class="field">
+          <label for="loginId">Login ID</label>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.4-4 4.2-6 7.5-6s6.1 2 7.5 6"/></svg>
+          <input id="loginId" type="text" placeholder="e.g. IS-1001" autocomplete="username">
+        </div>
 
-        <label for="password">Password</label>
-        <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
+        <div class="field pw">
+          <label for="password">Password</label>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>
+          <input id="password" type="password" placeholder="Enter password" autocomplete="current-password">
+          <button type="button" class="eye" id="eyeToggle" aria-label="Show password">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
 
-        <div class="error" id="loginError">Enter both a login ID and a password.</div>
+        <div class="capslock" id="capsWarn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M12 3l7 6h-4v6h-6v-6H5z"/><rect x="6" y="18" width="12" height="3"/></svg>
+          Caps Lock is on
+        </div>
+
+        <div class="error" id="loginError">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><circle cx="12" cy="16" r="0.6" fill="currentColor"/></svg>
+          <span id="loginErrorText">Enter both a login ID and a password.</span>
+        </div>
 
         <button type="submit" class="submit">Sign In</button>
       </form>
 
-      <div class="hint">Signing in as: <span id="roleLabel">Inspection worker</span></div>
-      <div class="hint" id="demoHint">Demo accounts, password <strong>demo123</strong>: IS-1001 (Inspection Staff) · SSE-1001 (SSE / HOD)<br><a href="#" id="resetDemo" style="color:var(--blue)">Reset demo data</a></div>
+      <div class="hint">Signing in as: <strong id="roleLabel" class="pending">—</strong></div>
+      <div class="hint" id="demoHint">
+        Demo accounts, password <strong>demo123</strong>: IS-1001 (Inspection Staff) · SSE-1001 (SSE / HOD)
+        <div style="margin-top:8px"><a href="#" id="resetDemo">Reset demo data</a></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script src="api.js"></script>
 <script>
-let role = 'is';
-document.querySelectorAll('.role-toggle button').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.role-toggle button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    role = btn.dataset.role;
-    document.getElementById('roleLabel').textContent = role === 'is' ? 'Inspection worker' : 'SSE / HOD';
-  };
+const loginIdInput = document.getElementById('loginId');
+const roleLabel = document.getElementById('roleLabel');
+
+function updateRoleLabel(){
+  const id = loginIdInput.value.trim();
+  let match = null;
+  if (id) {
+    try { match = _db().users.find(x => x.login_id.toLowerCase() === id.toLowerCase()); } catch (e) {}
+  }
+  if (match) {
+    roleLabel.textContent = match.is_mgmt_staff ? 'SSE / HOD' : 'Inspection worker';
+    roleLabel.classList.remove('pending');
+  } else {
+    roleLabel.textContent = '—';
+    roleLabel.classList.add('pending');
+  }
+}
+loginIdInput.addEventListener('input', updateRoleLabel);
+
+// password show/hide
+const pwInput = document.getElementById('password');
+const eyeBtn = document.getElementById('eyeToggle');
+eyeBtn.onclick = () => {
+  const showing = pwInput.type === 'text';
+  pwInput.type = showing ? 'password' : 'text';
+  eyeBtn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+};
+
+// caps lock detection
+const capsWarn = document.getElementById('capsWarn');
+pwInput.addEventListener('keyup', e => {
+  const on = e.getModifierState && e.getModifierState('CapsLock');
+  capsWarn.classList.toggle('show', !!on);
 });
+pwInput.addEventListener('blur', () => capsWarn.classList.remove('show'));
+
+// subtle spotlight follow on brand panel
+const brandside = document.getElementById('brandside');
+const spot = document.getElementById('spot');
+brandside.addEventListener('mousemove', e => {
+  const r = brandside.getBoundingClientRect();
+  spot.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+  spot.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+});
+
 document.getElementById('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   const id = document.getElementById('loginId').value.trim();
   const pw = document.getElementById('password').value.trim();
   const err = document.getElementById('loginError');
+  const errText = document.getElementById('loginErrorText');
   const btn = e.target.querySelector('button.submit');
-  if (!id || !pw) { err.textContent = 'Enter both a login ID and a password.'; err.classList.add('show'); return; }
+  if (!id || !pw) { errText.textContent = 'Enter both a login ID and a password.'; err.classList.add('show'); return; }
   err.classList.remove('show');
   btn.disabled = true; btn.textContent = 'Signing in…';
   try {
     const user = await authenticate(id, pw);
     window.location.href = user.is_mgmt_staff ? MGMT_HOME : IS_HOME;   // the account's own role decides
   } catch (ex) {
-    err.textContent = ex.message; err.classList.add('show');
+    errText.textContent = ex.message; err.classList.add('show');
     btn.disabled = false; btn.textContent = 'Sign In';
   }
 });

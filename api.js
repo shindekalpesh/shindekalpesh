@@ -10,7 +10,7 @@
 const DEMO_DATA = true;
 
 const API = "/api";                              // fake base path, kept so page code reads like real API calls
-const LOGIN_PAGE = "login.html";
+const LOGIN_PAGE = "index.html";
 const MGMT_HOME  = "sse-hod-summary.html";       // SSE / HOD landing page
 const IS_HOME    = "is-summary.html";              // Inspection Staff landing page (table layout — finalized)
 
