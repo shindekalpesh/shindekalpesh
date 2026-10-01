@@ -160,20 +160,22 @@ td.coach{font-weight:600;color:var(--navy);white-space:nowrap}
         <p class="phint">Mission-critical parameters currently out of range</p>
         <table>
           <tr><th>Coach</th><th>Parameter</th><th>Value</th><th></th></tr>
-          <tr><td class="coach">04512</td><td>LP cut-out, NPP side</td><td><span class="pill pill-bad">Not OK</span></td><td><a class="tlink" href="#">View →</a></td></tr>
-          <tr><td class="coach">04501</td><td>HP cut-out, PP side</td><td><span class="pill pill-bad">Not OK</span></td><td><a class="tlink" href="#">View →</a></td></tr>
-          <tr><td class="coach">04513</td><td>Earthing device</td><td><span class="pill pill-bad">Not earthed</span></td><td><a class="tlink" href="#">View →</a></td></tr>
-          <tr><td class="coach">04520</td><td>EBC cum RBC</td><td><span class="pill pill-bad">Not working</span></td><td><a class="tlink" href="#">View →</a></td></tr>
-          <tr><td class="coach">04501</td><td>Shut-off valve / live terminal</td><td><span class="pill pill-bad">Not earthed</span></td><td><a class="tlink" href="#">View →</a></td></tr>
+          <tr><td class="coach">04512</td><td>LP cut-out, NPP side</td><td><span class="pill pill-bad">Not OK</span></td><td><a class="tlink" href="critical-parameters.html?visit_id=1">View →</a></td></tr>
+          <tr><td class="coach">04501</td><td>HP cut-out, PP side</td><td><span class="pill pill-bad">Not OK</span></td><td><a class="tlink" href="critical-parameters.html?visit_id=4">View →</a></td></tr>
+          <tr><td class="coach">04513</td><td>Earthing device</td><td><span class="pill pill-bad">Not earthed</span></td><td><a class="tlink" href="critical-parameters.html?visit_id=2">View →</a></td></tr>
+          <tr><td class="coach">04520</td><td>EBC cum RBC</td><td><span class="pill pill-bad">Not working</span></td><td><a class="tlink" href="critical-parameters.html?visit_id=6">View →</a></td></tr>
+          <tr><td class="coach">04501</td><td>Shut-off valve / live terminal</td><td><span class="pill pill-bad">Not earthed</span></td><td><a class="tlink" href="critical-parameters.html?visit_id=4">View →</a></td></tr>
         </table>
       </div>
     </div>
 
+    <!-- Ageing of open inspections — commented out for now, not required for this presentation.
     <div class="panel" style="margin-bottom:14px">
       <h2>Ageing of open inspections</h2>
       <p class="phint">How long coaches still in progress or not started have been sitting</p>
       <div class="chartbox"><canvas id="chartAgeing"></canvas></div>
     </div>
+    -->
 
     <div class="panel teamwrap">
       <h2>Workload by team</h2>
@@ -205,6 +207,7 @@ if (typeof Chart !== "undefined") {
     }
   });
 
+  /* Ageing of open inspections — commented out along with its panel above, not required for this presentation.
   new Chart(document.getElementById("chartAgeing"), {
     type: "bar",
     data: {
@@ -217,6 +220,7 @@ if (typeof Chart !== "undefined") {
       scales: { y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#EEF1F3" } }, x: { grid: { display: false } } }
     }
   });
+  */
 }
 </script>
 </body>
