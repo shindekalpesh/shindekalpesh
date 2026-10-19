@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IS Staff — IR Workshop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#122A44;--navy2:#1C3A5A;--blue:#2F6690;--orange:#E8871E;
+  --bg:#F6F7F9;--panel:#fff;
+  --ink:#16232E;--ink2:#4A5A6A;--ink3:#7E8B98;
+  --line:#E2E6EA;--line2:#EEF1F3;
+  --blue100:#E9F0F5;--orange100:#FCEEDD;
+  --red:#9C2B1F;--red100:#FBEAE7;--green:#2E7D4F;--green100:#E6F3EB;
+  --sans:'Outfit',-apple-system,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.shell{display:grid;grid-template-columns:212px 1fr;min-height:100vh}
+.rail{background:var(--navy);padding:24px 0;display:flex;flex-direction:column}
+.rail .mark{font-size:11.5px;font-weight:600;letter-spacing:.06em;color:#93A8BC;padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:8px}
+.rail a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent;transition:background .15s}
+.rail a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
+.rail a:hover:not(.active){background:rgba(255,255,255,.04)}
+.rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
+.rail .who strong{color:#fff;display:block;margin-top:2px}
+.rail .logout{display:block;margin:10px 22px 0;font-size:12.5px;color:#93A8BC;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans)}
+main{padding:32px 44px 60px;min-width:0}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:4px;flex-wrap:wrap}
+h1{font-size:21px;font-weight:600}
+.meta{color:var(--ink3);font-size:13.5px;margin-bottom:24px}
+.btn{font-family:var(--sans);font-size:14px;padding:9px 18px;border-radius:7px;cursor:pointer;border:none;font-weight:600}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:var(--navy2)}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:500}
+.btn-ghost:hover{background:var(--line2)}
+.btn-blue{background:var(--blue);border:1px solid var(--blue);color:#fff}
+.btn-blue:hover,.dd-btn[aria-expanded="true"]{background:#255578;border-color:#255578;color:#fff}
+.btn:focus-visible,.kebab:focus-visible,.alink:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* Tiles */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.stat .lbl{font-size:12.5px;color:var(--ink3);font-weight:500}
+.stat .num{font-size:28px;font-weight:600;margin-top:4px;color:var(--navy);line-height:1.15}
+.stat .sub{font-size:12px;color:var(--ink3);margin-top:4px}
+.stagecounts{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap}
+.stagecounts span{font-size:13px;color:var(--ink2);display:inline-flex;align-items:center;gap:6px}
+.stagecounts b{font-size:20px;font-weight:600;color:var(--navy)}
+
+/* Filters */
+.filters{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.filters label{font-size:12px;color:var(--ink2);font-weight:500;display:block;margin-bottom:4px}
+.filters input,.filters select{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13.5px;font-family:var(--sans);color:var(--ink);background:#fff;width:180px}
+.filters input#fQ{width:240px}
+.filters input:focus,.filters select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue100)}
+.filters .spacer{flex:1}
+
+/* Table */
+.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;color:var(--ink3);font-weight:500;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--line2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#FAFAF9}
+td.id{font-weight:600;color:var(--navy);white-space:nowrap}
+td.ts,td.contact{white-space:nowrap}
+td.ts{color:var(--ink3);font-size:13px}
+td.email{font-size:13px;color:var(--ink2);overflow-wrap:anywhere;min-width:150px;max-width:210px}
+td.nm{white-space:nowrap}
+th,td{padding-left:12px;padding-right:12px}
+.small{display:block;font-size:12px;color:var(--ink3);margin-top:1px}
+.sec{font-size:12px;font-weight:600;color:var(--navy);background:var(--line2);padding:2px 8px;border-radius:5px;white-space:nowrap}
+.stage{font-size:13px;color:var(--ink2);white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.stage::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c,var(--ink3))}
+.pill{font-size:11.5px;padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap;margin-left:6px;vertical-align:1px}
+.pill-off{background:var(--line2);color:var(--ink2)}
+.pill-free{background:var(--green100);color:var(--green);margin-left:0}
+.alink{color:var(--blue);font-weight:600;text-decoration:none;white-space:nowrap}
+.alink:hover{text-decoration:underline}
+tr.off td:not(.act){opacity:.55}
+td.act{text-align:right;white-space:nowrap}
+td.act .btn{padding:6px 14px;font-size:13px}
+.loading{text-align:center;padding:40px;color:var(--ink3)}
+
+/* Menus (export + row actions) */
+.dropdown{position:relative;display:inline-block}
+.dd-btn{display:inline-flex;align-items:center;gap:8px}
+.dd-btn svg{transition:transform .15s}
+.dd-btn[aria-expanded="true"] svg{transform:rotate(180deg)}
+.kebab{border:1px solid var(--line);background:#fff;border-radius:7px;width:32px;height:31px;cursor:pointer;font-size:16px;line-height:1;color:var(--ink2);margin-left:6px;vertical-align:middle}
+.kebab:hover,.kebab[aria-expanded="true"]{background:var(--line2)}
+.menu{display:none;position:absolute;right:0;top:calc(100% + 6px);min-width:190px;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px rgba(18,42,68,.12);padding:5px;z-index:50;text-align:left}
+.menu.show{display:block}
+.menu button{display:block;width:100%;text-align:left;border:none;background:none;font-family:var(--sans);font-size:14px;color:var(--ink);padding:9px 12px;border-radius:6px;cursor:pointer}
+.menu button:hover:not(:disabled),.menu button:focus-visible{background:var(--blue100);color:var(--blue);outline:none}
+.menu button.danger{color:var(--red)}
+.menu button.danger:hover:not(:disabled){background:var(--red100);color:var(--red)}
+.menu button:disabled{color:var(--ink3);cursor:default}
+.menu button small{display:block;font-size:11.5px;color:var(--ink3);margin-top:1px;white-space:normal}
+
+@media (max-width:1100px){.stats{grid-template-columns:1fr 1fr}.table-wrap{overflow-x:auto}}
+@media (max-width:820px){.shell{grid-template-columns:1fr}.rail{display:none}main{padding:22px 16px 48px}.filters input,.filters select,.filters input#fQ{width:100%}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="mark">IR-WORKSHOP / PL</div>
+    <nav>
+      <a href="sse-hod-summary.html">Summary</a>
+      <a class="active" href="is-staff.html">IS Staff</a>
+      <a href="reassignment-log.html">Reassignment Log</a>
+      <a href="critical-parameters.html">Critical Parameters</a>
+    </nav>
+    <div class="who">Logged in as<strong id="userName">—</strong>
+      <button class="logout" onclick="logout()">Sign out</button></div>
+  </aside>
+
+  <main>
+    <div class="topline">
+      <h1>IS Staff</h1>
+      <button class="btn btn-navy" id="createBtn">+ Create staff</button>
+    </div>
+    <p class="meta" id="metaLine">Create and manage inspection staff accounts</p>
+
+    <div class="stats">
+      <div class="stat"><div class="lbl">Total staff</div><div class="num" id="stTotal">—</div><div class="sub" id="stTotalSub"></div></div>
+      <div class="stat"><div class="lbl">Active</div><div class="num" id="stActive">—</div><div class="sub">Can sign in and take coaches</div></div>
+      <div class="stat"><div class="lbl">Active staff by stage</div><div class="stagecounts" id="stStages"></div></div>
+      <div class="stat"><div class="lbl">Free now</div><div class="num" id="stFree">—</div><div class="sub">Active, with no unfinished coaches</div></div>
+    </div>
+
+    <div class="filters">
+      <div>
+        <label for="fQ">Search</label>
+        <input id="fQ" type="search" placeholder="Name, IS ID, contact or email">
+      </div>
+      <div>
+        <label for="fStage">Stage</label>
+        <select id="fStage">
+          <option value="">All stages</option>
+          <option value="pre_inspection">Pre-inspection</option>
+          <option value="poh_or_modification">POH / Modification</option>
+          <option value="final_inspection">Final inspection</option>
+        </select>
+      </div>
+      <div>
+        <label for="fStatus">Status</label>
+        <select id="fStatus">
+          <option value="">All</option>
+          <option value="ACTIVE">Active</option>
+          <option value="DEACTIVATED">Deactivated</option>
+        </select>
+      </div>
+      <button class="btn btn-ghost" id="clearBtn">Clear</button>
+      <div class="spacer"></div>
+      <div class="dropdown">
+        <button type="button" class="btn btn-blue dd-btn" id="exportBtn" aria-haspopup="menu" aria-expanded="false">
+          Export As <svg width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="menu" id="exportMenu" role="menu">
+          <button type="button" role="menuitem" data-f="csv">CSV</button>
+          <button type="button" role="menuitem" data-f="excel">Excel</button>
+          <button type="button" role="menuitem" data-f="pdf">PDF</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Full name</th><th>Contact</th><th>Email</th><th>Section</th><th>Stage</th>
+            <th>Current assignments</th><th>Created by</th><th>Created on</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"><tr><td colspan="10" class="loading">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="api.js"></script>
+<script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
+<script src="staff-ui.js"></script>
+<script>
+// Only SSE / HOD manage staff; everyone else goes to their own home page
+requireAuth();
+const user = getUser();
+if (!user?.is_mgmt_staff || user.is_management) location.replace(homeFor(user));
+
+const $ = id => document.getElementById(id);
+const mySection = user?.section_code || "—";
+$("userName").textContent = (user?.full_name || "SSE / HOD") + " · SSE / HOD · Section " + mySection;
+$("metaLine").textContent = `Section ${mySection} · Create and manage inspection staff accounts`;
+
+const STAGE_COLOR = { pre_inspection: "#2F6690", poh_or_modification: "#E8871E", final_inspection: "#2E7D4F" };
+const stageTag = s => `<span class="stage" style="--c:${STAGE_COLOR[s] || "#7E8B98"}">${esc(STAGE_LABEL[s] || "—")}</span>`;
+const fmtDate = t => t ? new Date(t).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "—";
+const isActive = s => s.status !== "DEACTIVATED";
+
+let staff = [];
+
+async function load() {
+  const res = await apiFetch(`${API}/staff/`);
+  const data = await res.json();
+  if (!res.ok) { $("tbody").innerHTML = `<tr><td colspan="10" class="loading">${esc(data.detail || "Could not load staff.")}</td></tr>`; return; }
+  staff = data.sort((a, b) => a.login_id.localeCompare(b.login_id, "en", { numeric: true }));
+  renderStats();
+  render();
+}
+
+function renderStats() {
+  const active = staff.filter(isActive);
+  $("stTotal").textContent = staff.length;
+  const off = staff.length - active.length;
+  $("stTotalSub").textContent = off ? `${off} deactivated` : "None deactivated";
+  $("stActive").textContent = active.length;
+  $("stStages").innerHTML = Object.keys(STAGE_LABEL).map(k =>
+    `<span title="${esc(STAGE_LABEL[k])}"><b>${active.filter(s => s.inspection_stage === k).length}</b>${stageTag(k)}</span>`).join("");
+  $("stFree").textContent = active.filter(s => s.current_assignments.active === 0).length;
+}
+
+function filtered() {
+  const q = $("fQ").value.trim().toLowerCase(), qDigits = q.replace(/\D/g, "");
+  const stage = $("fStage").value, status = $("fStatus").value;
+  return staff.filter(s =>
+    (!stage || s.inspection_stage === stage) &&
+    (!status || (status === "ACTIVE") === isActive(s)) &&
+    (!q || s.full_name.toLowerCase().includes(q) || s.login_id.toLowerCase().includes(q) || (s.email || "").includes(q) ||
+      (qDigits.length >= 3 && (s.contact || "").includes(qDigits))));
+}
+
+function assignmentsCell(s) {
+  const a = s.current_assignments;
+  if (!a.active) return `<span class="pill pill-free">None</span><span class="small">${a.submitted} submitted so far</span>`;
+  const parts = [a.not_started && `${a.not_started} not started`, a.in_progress && `${a.in_progress} in progress`].filter(Boolean).join(" · ");
+  return `<a class="alink" href="${SSE_HOME}?staff=${encodeURIComponent(s.login_id)}" title="Open these coaches on the Summary page">${a.active} active →</a><span class="small">${parts}</span>`;
+}
+
+function rowMenu(s) {
+  const open = s.current_assignments.active, coaches = `${open} unfinished coach${open > 1 ? "es" : ""}`;
+  const reassign = open
+    ? `<button type="button" role="menuitem" data-act="reassign">Reassign their coaches →<small>Opens their ${coaches} on Summary</small></button>` : "";
+  const toggle = isActive(s)
+    ? (open
+        ? `<button type="button" role="menuitem" disabled>Deactivate<small>Has ${coaches} — submit or reassign first</small></button>`
+        : `<button type="button" role="menuitem" class="danger" data-act="deactivate">Deactivate</button>`)
+    : `<button type="button" role="menuitem" data-act="reactivate">Reactivate</button>`;
+  return `<div class="dropdown">
+      <button type="button" class="kebab" aria-haspopup="menu" aria-expanded="false" aria-label="More actions for ${esc(s.full_name)}">⋯</button>
+      <div class="menu" role="menu">
+        <button type="button" role="menuitem" data-act="password">Reset password</button>
+        ${reassign}
+        ${toggle}
+      </div>
+    </div>`;
+}
+
+function render() {
+  const list = filtered();
+  if (!list.length) {
+    $("tbody").innerHTML = `<tr><td colspan="10" class="loading">${staff.length ? "No staff match these filters." : "No inspection staff yet — use “Create staff” to add the first one."}</td></tr>`;
+    return;
+  }
+  $("tbody").innerHTML = list.map(s => `
+    <tr data-id="${s.id}" class="${isActive(s) ? "" : "off"}">
+      <td class="id">${esc(s.login_id)}</td>
+      <td class="nm">${esc(s.full_name)}${isActive(s) ? "" : '<span class="pill pill-off">Deactivated</span>'}</td>
+      <td class="contact">${esc(fmtContact(s.contact))}</td>
+      <td class="email">${esc(s.email || "—")}</td>
+      <td><span class="sec">${esc(s.section_code || "—")}</span></td>
+      <td>${stageTag(s.inspection_stage)}</td>
+      <td>${assignmentsCell(s)}</td>
+      <td class="nm">${esc(s.created_by_name || "System")}<span class="small">${esc(s.created_by_login || "")}</span></td>
+      <td class="ts">${fmtDate(s.created_on)}</td>
+      <td class="act"><button type="button" class="btn btn-ghost" data-act="edit">Edit</button>${rowMenu(s)}</td>
+    </tr>`).join("");
+}
+
+// ── Menus ──
+function closeMenus() {
+  document.querySelectorAll(".menu.show").forEach(m => {
+    m.classList.remove("show");
+    m.previousElementSibling.setAttribute("aria-expanded", "false");
+  });
+}
+function toggleMenu(btn) {
+  const menu = btn.nextElementSibling, open = !menu.classList.contains("show");
+  closeMenus();
+  menu.classList.toggle("show", open); btn.setAttribute("aria-expanded", open);
+  if (open) menu.querySelector("button:not(:disabled)")?.focus();
+}
+document.addEventListener("click", e => { if (!e.target.closest(".dropdown")) closeMenus(); });
+document.addEventListener("keydown", e => {
+  const menu = e.target.closest && e.target.closest(".menu");
+  if (!menu) return;
+  const items = [...menu.querySelectorAll("button:not(:disabled)")], i = items.indexOf(document.activeElement);
+  if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+  if (e.key === "ArrowUp")   { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+  if (e.key === "Escape")    { const b = menu.previousElementSibling; closeMenus(); b.focus(); }
+});
+
+// ── Row actions ──
+$("tbody").addEventListener("click", async e => {
+  const kebab = e.target.closest(".kebab");
+  if (kebab) { e.stopPropagation(); toggleMenu(kebab); return; }
+  const b = e.target.closest("button[data-act]");
+  if (!b) return;
+  closeMenus();
+  const s = staff.find(x => x.id === +b.closest("tr").dataset.id);
+  if (!s) return;
+  const act = b.dataset.act;
+  if (act === "edit") return StaffForm.edit(s, load);
+  if (act === "password") return StaffForm.resetPassword(s, load);
+  if (act === "reassign") { location.href = `${SSE_HOME}?staff=${encodeURIComponent(s.login_id)}`; return; }
+  const deactivate = act === "deactivate";
+  const yes = await StaffForm.confirm(deactivate
+    ? { title: "Deactivate account?", subtitle: `${s.full_name} · ${s.login_id}`, ok: "Deactivate", danger: true,
+        text: "They won't be able to sign in or be assigned coaches. Their past inspection records stay as they are. You can reactivate the account later." }
+    : { title: "Reactivate account?", subtitle: `${s.full_name} · ${s.login_id}`, ok: "Reactivate",
+        text: "They'll be able to sign in with their existing password and can be assigned coaches again." });
+  if (!yes) return;
+  const res = await apiFetch(`${API}/staff/${s.id}/status/`, { method: "POST", body: JSON.stringify({ status: deactivate ? "DEACTIVATED" : "ACTIVE" }) });
+  const data = await res.json();
+  if (!res.ok) return showToast(data.detail || "Could not change the account status.", "error");
+  showToast(`${data.full_name} (${data.login_id}) ${deactivate ? "deactivated" : "reactivated"}.`);
+  load();
+});
+
+$("createBtn").onclick = () => StaffForm.create(load);
+["fQ", "fStage", "fStatus"].forEach(id => $(id).addEventListener(id === "fQ" ? "input" : "change", render));
+$("clearBtn").onclick = () => { ["fQ", "fStage", "fStatus"].forEach(id => $(id).value = ""); render(); };
+
+// ── Export ──
+$("exportBtn").onclick = e => { e.stopPropagation(); toggleMenu($("exportBtn")); };
+$("exportMenu").onclick = e => {
+  const b = e.target.closest("button[data-f]");
+  if (!b) return;
+  closeMenus();
+  const head = ["ID", "Full name", "Contact", "Email", "Section", "Stage", "Status", "Active assignments",
+    "Not started", "In progress", "Submitted", "Created by", "Created on"];
+  const rows = filtered().map(s => [s.login_id, s.full_name, fmtContact(s.contact), s.email, s.section_code,
+    STAGE_LABEL[s.inspection_stage] || "—", isActive(s) ? "Active" : "Deactivated",
+    s.current_assignments.active, s.current_assignments.not_started, s.current_assignments.in_progress, s.current_assignments.submitted,
+    s.created_by_name ? staffLabel(s.created_by_name, s.created_by_login) : "System", fmtDate(s.created_on)]);
+  exportRows(exportFileBase("section-" + mySection, "is-staff"), `IS staff — Section ${mySection}`, head, rows, b.dataset.f);
+};
+
+load();
+</script>
+</body>
+</html>

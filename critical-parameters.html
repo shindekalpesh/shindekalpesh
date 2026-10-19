@@ -89,6 +89,8 @@ h1{font-size:21px;font-weight:600;margin:0}
     <nav>
       <a href="executive-dashboard.html" id="dashLink" style="display:none">Executive Dashboard</a>
       <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
+      <a href="is-staff.html" id="staffLink" style="display:none">IS Staff</a>
+      <a href="reassignment-log.html" id="logLink" style="display:none">Reassignment Log</a>
       <a class="active" href="critical-parameters.html">Critical Parameters</a>
     </nav>
     <div class="who">
@@ -108,10 +110,11 @@ h1{font-size:21px;font-weight:600;margin:0}
           <span class="badge badge-light" id="ccType">—</span>
           <span class="badge badge-orange" id="ccStatus">—</span>
         </div>
-        <div class="cc-sub">Pre-inspection</div>
+        <div class="cc-sub" id="ccStage">—</div>
         <div class="cc-meta">
           <div class="cc-item"><span class="cc-lbl">Report date</span><span class="cc-val" id="ccDate">—</span></div>
           <div class="cc-item"><span class="cc-lbl">Inspection staff</span><span class="cc-val" id="ccInspector">—</span></div>
+          <div class="cc-item"><span class="cc-lbl">Section</span><span class="cc-val" id="ccSection">—</span></div>
           <div class="cc-item"><span class="cc-lbl">Sections complete</span><span class="cc-val" id="ccSections">—</span></div>
         </div>
       </div>
@@ -140,6 +143,8 @@ document.getElementById("userName").textContent = (me?.full_name || "") + (me?.i
 document.getElementById("summaryLink").href = me?.is_mgmt_staff ? MGMT_HOME : IS_HOME;
 document.getElementById("summaryLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
 document.getElementById("dashLink").style.display = me?.is_mgmt_staff ? "" : "none";
+document.getElementById("staffLink").style.display = me?.is_mgmt_staff && !me.is_management ? "" : "none";   // SSE / HOD only
+document.getElementById("logLink").style.display = document.getElementById("staffLink").style.display;
 const params = new URLSearchParams(location.search);
 const visit = getVisit(+params.get("visit_id") || 1);   // opened directly: shows coach 04512, same as is-main-entry's default
 
@@ -171,9 +176,20 @@ if (!visit) {
   document.getElementById("ccType").textContent = _TYPE_LABEL[visit.coach_type] || visit.coach_type;
   document.getElementById("ccStatus").textContent = statusOf(visit);
   document.getElementById("ccDate").textContent = visit.submitted_on ? fmtDateTime(visit.submitted_on) : visit.last_saved_on ? fmtDateTime(visit.last_saved_on) : "Not saved yet";
-  document.getElementById("ccInspector").textContent = visit.assigned_to_name || "Unassigned";
+  document.getElementById("ccInspector").textContent = visit.assigned_to_name ? staffLabel(visit.assigned_to_name, visit.assigned_to_login) : "Unassigned";
+  document.getElementById("ccSection").textContent = visit.section_code || "—";
+  const phase = visit.inspection_phase || STAGE_PRE;
+  document.getElementById("ccStage").textContent = STAGE_LABEL[phase] || phase;
   document.getElementById("ccSections").textContent = (visit.sections_completed ?? 0) + " of " + (visit.sections_total || 8);
+}
 
+if (visit && (visit.inspection_phase || STAGE_PRE) !== STAGE_PRE) {
+  // The watchlist and range checks are defined for the pre-inspection form only
+  document.querySelector(".tally").style.display = "none";
+  document.querySelectorAll(".sectionhead").forEach(h => h.style.display = "none");
+  document.getElementById("mcList").innerHTML = `<p class="emptynote">Critical parameters are tracked for pre-inspection. This coach is at the ${esc(STAGE_LABEL[visit.inspection_phase])} stage — <a href="is-main-entry.html?visit_id=${visit.id}&readonly=1">open its inspection sheet</a> to see the readings.</p>`;
+  document.getElementById("otherList").innerHTML = "";
+} else if (visit) {
   const mc = missionCriticalValues(visit);
   const entered = mc.filter(f => f.value).length;
   const flaggedMc = mc.filter(f => f.state === "flagged").length;

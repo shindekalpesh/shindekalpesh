@@ -355,7 +355,9 @@ button.submit::after{
 
       <div class="hint">Signing in as: <strong id="roleLabel" class="pending">—</strong></div>
       <div class="hint" id="demoHint">
-        Demo accounts, password <strong>demo123</strong>: IS-1001 (Inspection Staff) · SSE-1001 (SSE / HOD)
+        Demo accounts, password <strong>demo123</strong>:<br>
+        IS-1001 (Pre-inspection) · IS-1002 (POH / Modification) · IS-1003 (Final inspection)<br>
+        SSE-1001 (SSE / HOD) · MG-1001 (Management)
         <div style="margin-top:8px"><a href="#" id="resetDemo">Reset demo data</a></div>
       </div>
     </div>
@@ -374,7 +376,11 @@ function updateRoleLabel(){
     try { match = _db().users.find(x => x.login_id.toLowerCase() === id.toLowerCase()); } catch (e) {}
   }
   if (match) {
-    roleLabel.textContent = match.is_mgmt_staff ? 'SSE / HOD' : 'Inspection worker';
+    const sec = match.section_code ? ' · Section ' + match.section_code : '';
+    roleLabel.textContent = match.is_management ? 'Management'
+      : match.is_mgmt_staff ? 'SSE / HOD' + sec
+      : 'Inspection Staff — ' + (STAGE_LABEL[match.inspection_stage] || match.inspection_stage || '—') + sec
+        + (match.status === 'DEACTIVATED' ? ' (deactivated)' : '');
     roleLabel.classList.remove('pending');
   } else {
     roleLabel.textContent = '—';
@@ -421,7 +427,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   btn.disabled = true; btn.textContent = 'Signing in…';
   try {
     const user = await authenticate(id, pw);
-    window.location.href = user.is_mgmt_staff ? MGMT_HOME : IS_HOME;   // the account's own role decides
+    window.location.href = homeFor(user);   // MG → executive dashboard, SSE → summary, IS → assignments
   } catch (ex) {
     errText.textContent = ex.message; err.classList.add('show');
     btn.disabled = false; btn.textContent = 'Sign In';

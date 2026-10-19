@@ -78,29 +78,7 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
 .modal input,.modal select{width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:14px;font-family:var(--sans);color:var(--ink)}
 .modal input:focus,.modal select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue100)}
 .modal .actions{display:flex;gap:10px;margin-top:22px;justify-content:flex-end}
-/* Create staff user modal */
-.modal-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
-.modal-head h2{margin-bottom:4px}
-.modal .sub{font-size:13px;color:var(--ink3)}
-.x{border:none;background:none;font-size:24px;line-height:1;color:var(--ink3);cursor:pointer;padding:2px 8px;border-radius:6px}
-.x:hover{background:var(--line2)}
-.modal input.invalid{border-color:#D9776B}
-.modal input.invalid:focus{box-shadow:0 0 0 3px #FBEAE7}
 .fmsg{font-size:12.5px;color:var(--ink3);margin-top:5px}
-.fmsg.err{color:#9C2B1F}
-.pwwrap{position:relative}
-.pwwrap input{padding-right:62px}
-.pwtoggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:none;background:none;color:var(--blue);font-family:var(--sans);font-size:12.5px;font-weight:500;cursor:pointer;padding:6px 8px;border-radius:5px}
-.pwtoggle:hover{background:var(--blue100)}
-.strength{display:flex;align-items:center;gap:10px;margin-top:10px}
-.segs{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
-.segs span{height:4px;border-radius:2px;background:var(--line2);transition:background .2s}
-.sword{font-size:12px;font-weight:500;min-width:48px;text-align:right;color:var(--ink3)}
-.rules{list-style:none;margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:4px 12px}
-.rules li{font-size:12.5px;color:var(--ink3);display:flex;align-items:center;gap:7px}
-.rules i{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:8px;color:#fff;flex-shrink:0;transition:all .15s}
-.rules li.ok{color:var(--ink2)}
-.rules li.ok i{background:#2E7D4F;border-color:#2E7D4F}
 .btn:disabled{opacity:.7;cursor:default}
 .dropdown{position:relative}
 .dd-btn{display:inline-flex;align-items:center;gap:8px}
@@ -112,7 +90,22 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
 .dd-menu.show{display:block}
 .dd-menu button{display:block;width:100%;text-align:left;border:none;background:none;font-family:var(--sans);font-size:14px;color:var(--ink);padding:9px 12px;border-radius:6px;cursor:pointer}
 .dd-menu button:hover,.dd-menu button:focus-visible{background:var(--blue100);color:var(--blue);outline:none}
-.btn:focus-visible,.x:focus-visible,.pwtoggle:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.btn:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* Notification badge */
+.notif-wrap{position:relative;display:inline-flex;align-items:center}
+.notif-badge{position:absolute;top:-5px;right:-5px;min-width:18px;height:18px;background:#9C2B1F;color:#fff;font-size:10.5px;font-weight:700;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px;pointer-events:none;border:2px solid var(--navy)}
+.notif-badge[hidden]{display:none}
+/* Staff identity: name, IS ID, section, stage */
+.sid{display:block;font-size:12px;color:var(--ink3);margin-top:1px;letter-spacing:.02em}
+.sec{font-size:12px;font-weight:600;color:var(--navy);background:var(--line2);padding:2px 8px;border-radius:5px;white-space:nowrap}
+.stage{font-size:13px;color:var(--ink2);white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+.stage::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c,var(--ink3))}
+.rnote{display:block;font-size:11.5px;color:#8A5410;margin-top:2px}
+td.act{text-align:right;white-space:nowrap}
+.btn-sm{padding:5px 12px;font-size:13px;font-weight:500}
+td.act .arrow{display:inline-block;margin-left:10px;vertical-align:middle}
+.modal input[readonly]{background:var(--line2);color:var(--ink2);cursor:default}
+.modal select:disabled{background:var(--line2);color:var(--ink3)}
 </style>
 </head>
 <body>
@@ -121,7 +114,13 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
     <div class="mark">IR-WORKSHOP / PL</div>
     <nav>
       <a href="executive-dashboard.html">Executive Dashboard</a>
-      <a class="active" href="sse-hod-summary.html">Summary</a>
+      <a class="active" href="sse-hod-summary.html">
+        <span class="notif-wrap">Summary
+          <span class="notif-badge" id="notifBadge" hidden></span>
+        </span>
+      </a>
+      <a href="is-staff.html">IS Staff</a>
+      <a href="reassignment-log.html">Reassignment Log</a>
       <a href="critical-parameters.html">Critical Parameters</a>
     </nav>
     <div class="who">
@@ -149,10 +148,10 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
       </div>
       <div style="display:flex;gap:10px">
         <button class="btn btn-orange" onclick="openAssignModal()">Assign task</button>
-        <button class="btn btn-navy" onclick="openUserModal()">Create Staff User Account</button>
+        <button class="btn btn-navy" onclick="StaffForm.create()">Create Staff User Account</button>
       </div>
     </div>
-    <p class="meta">Ongoing and completed assignments — today and previous 3 days</p>
+    <p class="meta"><span id="secLine"></span>Ongoing and completed assignments — today and previous 3 days</p>
 
     <div class="stats">
       <div class="stat"><div class="lbl">Live assignments</div><div class="num" id="statLive">—</div></div>
@@ -174,6 +173,19 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
           <option value="NEW_LHB">New LHB</option>
           <option value="THERMAL_LHB">Thermal LHB</option>
           <option value="THERMAL_SG">Thermal SG</option>
+        </select>
+      </div>
+      <div>
+        <label>Inspection staff</label>
+        <input id="fStaff" type="text" placeholder="Name or IS ID" oninput="applyFilters()">
+      </div>
+      <div>
+        <label>Stage</label>
+        <select id="fStage" onchange="applyFilters()">
+          <option value="">All stages</option>
+          <option value="pre_inspection">Pre-inspection</option>
+          <option value="poh_or_modification">POH / Modification</option>
+          <option value="final_inspection">Final inspection</option>
         </select>
       </div>
       <div>
@@ -207,11 +219,11 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
       <table>
         <thead>
           <tr>
-            <th>Coach</th><th>IW</th><th>Type</th>
+            <th>Coach</th><th>Inspection staff</th><th>Section</th><th>Stage</th><th>Type</th>
             <th>Status</th><th>Last saved</th><th></th>
           </tr>
         </thead>
-        <tbody id="visitTbody"><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+        <tbody id="visitTbody"><tr><td colspan="8" class="loading">Loading…</td></tr></tbody>
       </table>
     </div>
 
@@ -253,8 +265,18 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
     <input id="aInDate" type="date">
     <label>Pre-inspection date</label>
     <input id="aInspDate" type="date">
-    <label>Assign to (inspection staff) *</label>
-    <select id="aAssignTo"></select>
+    <label for="aSectionCode">Workshop section</label>
+    <input id="aSectionCode" type="text" readonly>
+    <label for="aStage">Inspection stage *</label>
+    <select id="aStage" onchange="fillStaffOptions()">
+      <option value="">Select stage</option>
+      <option value="pre_inspection">Pre-inspection</option>
+      <option value="poh_or_modification">POH / Modification</option>
+      <option value="final_inspection">Final inspection</option>
+    </select>
+    <label for="aAssignTo">Assign to (inspection staff) *</label>
+    <select id="aAssignTo" disabled></select>
+    <div class="fmsg" id="aAssignMsg"></div>
     <div class="actions">
       <button class="btn btn-ghost" onclick="closeAssignModal()">Cancel</button>
       <button class="btn btn-orange" onclick="submitAssignment()">Create assignment</button>
@@ -262,69 +284,53 @@ tr:hover td{background:#FAFAF9;cursor:pointer}
   </div>
 </div>
 
-<!-- Create Staff User Account Modal -->
-<div class="modal-bg" id="userModal">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="userModalTitle">
-    <div class="modal-head">
-      <div>
-        <h2 id="userModalTitle">Create staff user account</h2>
-        <p class="sub">The staff member can sign in with these details right away.</p>
-      </div>
-      <button type="button" class="x" onclick="closeUserModal()" aria-label="Close">&times;</button>
-    </div>
-    <form id="userForm" novalidate autocomplete="off" onsubmit="submitStaffUser(event)">
-      <label for="uId">Staff ID *</label>
-      <input id="uId" name="staff_id" type="text" placeholder="e.g. IS-1002" maxlength="12" spellcheck="false" autocomplete="off">
-      <div class="fmsg" id="uIdMsg">Letters, a hyphen, then numbers.</div>
-
-      <label for="uEmail">Staff email ID *</label>
-      <input id="uEmail" name="staff_email_id" type="email" placeholder="name@example.com" spellcheck="false" autocomplete="off">
-      <div class="fmsg" id="uEmailMsg"></div>
-
-      <label for="uPw">Password *</label>
-      <div class="pwwrap">
-        <input id="uPw" name="password" type="password" placeholder="Create a password" autocomplete="new-password">
-        <button type="button" class="pwtoggle" id="uPwToggle" aria-label="Show password" onclick="togglePw()">Show</button>
-      </div>
-      <div class="strength" aria-hidden="true">
-        <div class="segs"><span></span><span></span><span></span><span></span></div>
-        <div class="sword" id="uPwWord"></div>
-      </div>
-      <ul class="rules" id="uRules">
-        <li data-r="len"><i>✓</i>8+ characters</li>
-        <li data-r="upper"><i>✓</i>Uppercase letter</li>
-        <li data-r="lower"><i>✓</i>Lowercase letter</li>
-        <li data-r="num"><i>✓</i>A number</li>
-        <li data-r="sym"><i>✓</i>A symbol</li>
-      </ul>
-      <div class="fmsg" id="uPwMsg"></div>
-
-      <div class="actions">
-        <button type="button" class="btn btn-ghost" onclick="resetUserForm()">Reset Form</button>
-        <button type="submit" class="btn btn-orange" id="uCreateBtn">Create User</button>
-      </div>
-    </form>
-  </div>
-</div>
-
 <script src="api.js"></script>
 <script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
+<script src="staff-ui.js"></script>
 <script>
 requireAuth();
 const user = getUser();
-if (!user?.is_mgmt_staff) location.replace(IS_HOME); // only SSE / HOD accounts (is_mgmt_staff) may view this page
+if (!user?.is_mgmt_staff) location.replace(IS_HOME);
+// MG (management) accounts go to the executive dashboard, not here
+if (user?.is_management) location.replace(MGMT_HOME);
 
+const mySection = user?.section_code || "—";
 document.getElementById("userName").textContent =
-  (user?.full_name || user?.username || "SSE/HOD") + " · SSE / HOD";
+  (user?.full_name || user?.username || "SSE/HOD") + " · SSE / HOD · Section " + mySection;
+document.getElementById("secLine").textContent = "Section " + mySection + " · ";
+
+const STAGE_COLOR = { pre_inspection: "#2F6690", poh_or_modification: "#E8871E", final_inspection: "#2E7D4F" };
+function stageTag(phase) {
+  return `<span class="stage" style="--c:${STAGE_COLOR[phase] || "#7E8B98"}">${esc(STAGE_LABEL[phase] || "—")}</span>`;
+}
+
+// ── Notification badge ──────────────────────
+function refreshNotifBadge() {
+  const notifs = getNotifications();
+  const badge = document.getElementById("notifBadge");
+  if (notifs.length > 0) {
+    badge.textContent = notifs.length > 9 ? "9+" : notifs.length;
+    badge.hidden = false;
+  } else {
+    badge.hidden = true;
+  }
+}
+// Mark all read when the SSE opens this page (they're seeing the data now)
+markNotificationsRead();
+refreshNotifBadge();
 
 let allVisits = [];
+
+// Arriving from the IS Staff page (?staff=IS-1001) pre-filters the table to that inspector
+const staffParam = new URLSearchParams(location.search).get("staff");
+if (staffParam) document.getElementById("fStaff").value = staffParam;
 
 // ── LOAD VISITS ──────────────────────────────
 async function loadVisits() {
   const res = await apiFetch(`${API}/visits/`);
   if (!res) return;
   allVisits = await res.json();
-  renderTable(allVisits);
+  applyFilters();   // keeps any active filters across the 60-second refresh
   renderStats(allVisits);
   renderCharts(allVisits);
 }
@@ -333,17 +339,21 @@ async function loadVisits() {
 function renderTable(visits) {
   const tbody = document.getElementById("visitTbody");
   if (!visits.length) {
-    tbody.innerHTML = `<tr><td colspan="6" class="loading">No assignments found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="loading">No assignments found.</td></tr>`;
     return;
   }
   tbody.innerHTML = visits.map(v => `
     <tr onclick="openVisit(${v.id})" style="cursor:pointer">
       <td class="coach">${esc(v.coach_number)}</td>
-      <td>${esc(v.assigned_to_name || "—")}</td>
+      <td>${esc(v.assigned_to_name || "—")}<span class="sid">${esc(v.assigned_to_login || "")}</span>${v.last_reassignment
+        ? `<span class="rnote" title="${esc(REASSIGN_REASONS[v.last_reassignment.reason] || "")}">↻ Reassigned from ${esc(v.last_reassignment.from_name)}</span>` : ""}</td>
+      <td><span class="sec">${esc(v.section_code || "—")}</span></td>
+      <td>${stageTag(v.inspection_phase)}</td>
       <td>${esc(v.coach_type)}</td>
       <td>${statusPill(v.status, v.flagged_count)}</td>
       <td class="ts">${fmtDateTime(v.last_saved_on)}</td>
-      <td class="arrow">›</td>
+      <td class="act">${v.status !== "SUBMITTED"
+        ? `<button type="button" class="btn btn-ghost btn-sm" onclick="event.stopPropagation();reassignVisit(${v.id})">Reassign</button>` : ""}<span class="arrow">›</span></td>
     </tr>
   `).join("");
 }
@@ -425,8 +435,12 @@ function applyFilters() {
   const type   = document.getElementById("fType").value;
   const status = document.getElementById("fStatus").value;
   const date   = document.getElementById("fDate").value;
+  const staff  = document.getElementById("fStaff").value.trim().toLowerCase();
+  const stage  = document.getElementById("fStage").value;
 
   if (coach)  filtered = filtered.filter(v => v.coach_number.toLowerCase().includes(coach));
+  if (staff)  filtered = filtered.filter(v => `${v.assigned_to_name || ""} ${v.assigned_to_login || ""}`.toLowerCase().includes(staff));
+  if (stage)  filtered = filtered.filter(v => v.inspection_phase === stage);
   if (type)   filtered = filtered.filter(v => v.coach_type === type);
   if (status) filtered = filtered.filter(v => v.status === status);
   if (date)   filtered = filtered.filter(v => v.pre_inspection_date === date);
@@ -435,10 +449,11 @@ function applyFilters() {
 }
 
 function clearFilters() {
-  ["fCoach","fType","fStatus","fDate"].forEach(id => {
+  ["fCoach","fStaff","fStage","fType","fStatus","fDate"].forEach(id => {
     const el = document.getElementById(id);
     el.value = "";
   });
+  if (staffParam) history.replaceState(null, "", location.pathname);   // drop ?staff= so a refresh doesn't re-apply it
   renderTable(allVisits);
 }
 
@@ -447,13 +462,40 @@ function openVisit(id) {
   window.location.href = `is-main-entry.html?visit_id=${id}&readonly=1`;
 }
 
+// ── REASSIGN ─────────────────────────────────
+// Hands an unfinished coach to another inspector of the same stage (window in staff-ui.js)
+function reassignVisit(id) {
+  const v = allVisits.find(x => x.id === id);
+  if (v) StaffForm.reassign(v, () => loadVisits());
+}
+
 // ── ASSIGN MODAL ─────────────────────────────
+let staffList = [];
 async function openAssignModal() {
-  const res = await apiFetch(`${API}/users/`);          // inspection staff list
-  const staff = res ? await res.json() : [];
-  document.getElementById("aAssignTo").innerHTML = '<option value="">Select inspection staff</option>' +
-    staff.map(u => `<option value="${u.id}">${esc(u.full_name)} (${esc(u.login_id)})</option>`).join("");
+  const res = await apiFetch(`${API}/staff/`);          // inspection staff in my section, with live workload
+  staffList = res && res.ok ? (await res.json()).filter(u => u.status !== "DEACTIVATED") : [];
+  document.getElementById("aSectionCode").value = mySection;
+  document.getElementById("aStage").value = "";
+  fillStaffOptions();
   document.getElementById("assignModal").classList.add("show");
+}
+// Only inspectors whose stage matches the chosen stage can be picked
+function fillStaffOptions() {
+  const stage = document.getElementById("aStage").value;
+  const sel = document.getElementById("aAssignTo"), msg = document.getElementById("aAssignMsg");
+  if (!stage) {
+    sel.innerHTML = '<option value="">Select a stage first</option>'; sel.disabled = true;
+    msg.textContent = "Only inspectors of the chosen stage are listed."; return;
+  }
+  const list = staffList.filter(u => u.inspection_stage === stage);
+  sel.disabled = !list.length;
+  sel.innerHTML = list.length
+    ? '<option value="">Select inspection staff</option>' +
+      list.map(u => `<option value="${u.id}">${esc(u.full_name)} — ${esc(u.login_id)} · ${u.current_assignments.active ? u.current_assignments.active + " active" : "free"}</option>`).join("")
+    : `<option value="">No ${esc(STAGE_LABEL[stage])} staff in section ${esc(mySection)}</option>`;
+  msg.textContent = list.length
+    ? `${list.length} ${STAGE_LABEL[stage]} inspector${list.length > 1 ? "s" : ""} in section ${mySection}.`
+    : "Create an active staff account for this stage first, on the IS Staff page.";
 }
 function closeAssignModal() { document.getElementById("assignModal").classList.remove("show"); }
 
@@ -465,11 +507,12 @@ async function submitAssignment() {
     overhaul_type:       document.getElementById("aOverhaul").value,
     coach_in_date:       document.getElementById("aInDate").value || null,
     pre_inspection_date: document.getElementById("aInspDate").value || null,
+    inspection_phase:    document.getElementById("aStage").value,
     assigned_to:         parseInt(document.getElementById("aAssignTo").value) || null,
   };
 
-  if (!body.coach_number || !body.assigned_to) {
-    showToast("Coach number and inspection staff are required.", "error"); return;
+  if (!body.coach_number || !body.inspection_phase || !body.assigned_to) {
+    showToast("Coach number, inspection stage and inspection staff are required.", "error"); return;
   }
 
   const res = await apiFetch(`${API}/visits/`, {
@@ -484,126 +527,18 @@ async function submitAssignment() {
     loadVisits();
   } else {
     const err = await res.json();
-    showToast("Error: " + JSON.stringify(err), "error");
+    showToast(Object.values(err).flat().join(" ") || "Could not create the assignment.", "error");
   }
 }
 
-// ── CREATE STAFF USER MODAL ──────────────────
-const PW_RULES = {
-  len:   v => v.length >= 8,
-  upper: v => /[A-Z]/.test(v),
-  lower: v => /[a-z]/.test(v),
-  num:   v => /\d/.test(v),
-  sym:   v => /[^A-Za-z0-9]/.test(v),
-};
-const pwScore = v => Object.values(PW_RULES).filter(f => f(v)).length;
+// The Create Staff window is shared with the IS Staff page — see staff-ui.js
 
-const UF = {
-  staff_id:       { el: "uId",    msg: "uIdMsg",    help: "Letters, a hyphen, then numbers.",
-    val: () => document.getElementById("uId").value.trim().toUpperCase(),
-    check: v => !v ? "Enter the staff ID."
-      : !/^[A-Z]{2,4}-\d{3,6}$/.test(v) ? "Use the format IS-1002 (2–4 letters, hyphen, 3–6 digits)." : "" },
-  staff_email_id: { el: "uEmail", msg: "uEmailMsg", help: "",
-    val: () => document.getElementById("uEmail").value.trim().toLowerCase(),
-    check: v => !v ? "Enter the email ID."
-      : !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? "Enter a valid email, like name@example.com." : "" },
-  password:       { el: "uPw",    msg: "uPwMsg",    help: "",
-    val: () => document.getElementById("uPw").value,
-    check: v => !v ? "Create a password."
-      : pwScore(v) < 5 ? "Password must meet all the requirements above." : "" },
-};
-const uTouched = {};
-
-function showFieldState(name, error) {
-  const f = UF[name], el = document.getElementById(f.el), m = document.getElementById(f.msg);
-  el.classList.toggle("invalid", !!error);
-  el.setAttribute("aria-invalid", error ? "true" : "false");
-  m.textContent = error || f.help;
-  m.classList.toggle("err", !!error);
-}
-function validateUserField(name, show) {
-  const error = UF[name].check(UF[name].val());
-  if (show) showFieldState(name, error);
-  return !error;
-}
-function updateStrength(v) {
-  document.querySelectorAll("#uRules li").forEach(li => li.classList.toggle("ok", PW_RULES[li.dataset.r](v)));
-  const sc = pwScore(v), lvl = !v ? 0 : sc <= 2 ? 1 : sc === 3 ? 2 : sc === 4 ? 3 : 4;
-  const cols = ["", "#D9776B", "#E8871E", "#5B95BF", "#2E7D4F"], words = ["", "Weak", "Fair", "Good", "Strong"];
-  document.querySelectorAll(".segs span").forEach((s, i) => s.style.background = i < lvl ? cols[lvl] : "");
-  const w = document.getElementById("uPwWord"); w.textContent = words[lvl]; w.style.color = cols[lvl];
-}
-Object.keys(UF).forEach(name => {
-  const el = document.getElementById(UF[name].el);
-  el.addEventListener("blur", () => { uTouched[name] = true; validateUserField(name, true); });
-  el.addEventListener("input", () => {
-    if (name === "staff_id") el.value = el.value.toUpperCase();
-    if (name === "password") updateStrength(el.value);
-    if (uTouched[name]) validateUserField(name, true);
-  });
-});
-
-function togglePw() {
-  const el = document.getElementById("uPw"), b = document.getElementById("uPwToggle");
-  const show = el.type === "password";
-  el.type = show ? "text" : "password";
-  b.textContent = show ? "Hide" : "Show";
-  b.setAttribute("aria-label", show ? "Hide password" : "Show password");
-}
-function resetUserForm() {
-  document.getElementById("userForm").reset();
-  Object.keys(UF).forEach(n => { uTouched[n] = false; showFieldState(n, ""); document.getElementById(UF[n].el).removeAttribute("aria-invalid"); });
-  document.getElementById("uPw").type = "password";
-  document.getElementById("uPwToggle").textContent = "Show";
-  updateStrength("");
-  document.getElementById("uId").focus();
-}
-function openUserModal()  { document.getElementById("userModal").classList.add("show"); resetUserForm(); }
-function closeUserModal() { document.getElementById("userModal").classList.remove("show"); }
-
-async function submitStaffUser(e) {
-  e.preventDefault();
-  let firstBad = null;
-  Object.keys(UF).forEach(n => {
-    uTouched[n] = true;
-    if (!validateUserField(n, true) && !firstBad) firstBad = document.getElementById(UF[n].el);
-  });
-  if (firstBad) { firstBad.focus(); showToast("Fix the highlighted fields and try again.", "error"); return; }
-
-  const body = {
-    staff_id:       UF.staff_id.val(),
-    staff_email_id: UF.staff_email_id.val(),
-    password:       UF.password.val(),
-  };
-  const btn = document.getElementById("uCreateBtn");
-  btn.disabled = true; btn.textContent = "Creating…";
-  try {
-    const res = await apiFetch(`${API}/users/`, { method: "POST", body: JSON.stringify(body) });
-    if (!res) return;
-    if (res.ok) {
-      showToast("Staff user " + body.staff_id + " created.");
-      closeUserModal();
-    } else {
-      const err = await res.json().catch(() => ({}));
-      let shown = false;
-      Object.keys(UF).forEach(n => {
-        if (err[n]) { showFieldState(n, [].concat(err[n]).join(" ")); shown = true; }
-      });
-      if (!shown) showToast("Error: " + (err.detail || JSON.stringify(err)), "error");
-    }
-  } finally {
-    btn.disabled = false; btn.textContent = "Create User";
-  }
-}
-
-// Close modals with Escape or a click on the backdrop
+// Close the assign window / export menu with Escape or a click on the backdrop
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") { closeUserModal(); closeAssignModal(); closeExport(); }
+  if (e.key === "Escape") { closeAssignModal(); closeExport(); }
 });
-["userModal", "assignModal"].forEach(id => {
-  document.getElementById(id).addEventListener("mousedown", e => {
-    if (e.target.id === id) id === "userModal" ? closeUserModal() : closeAssignModal();
-  });
+document.getElementById("assignModal").addEventListener("mousedown", e => {
+  if (e.target.id === "assignModal") closeAssignModal();
 });
 
 // ── EXPORT DROPDOWN ──────────────────────────

@@ -68,6 +68,7 @@ td{padding:12px 16px;border-bottom:1px solid var(--line2);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#FAFAF9}
 td.coach{font-weight:600;color:var(--navy)}
+td.coach .handed{display:block;font-size:11.5px;font-weight:500;color:#8A5410;margin-top:2px}
 td.pgc{min-width:150px}
 td.pgc small{display:block;font-size:12px;color:var(--ink3);margin-top:4px}
 td.act{text-align:right}
@@ -91,7 +92,7 @@ td.act .btn{padding:7px 16px}
       <h1>My assignments</h1>
       <span class="today" id="todayDate" aria-label="Today's date"></span>
     </div>
-    <p class="meta">Coaches assigned to you — today and previous 3 days</p>
+    <p class="meta"><span id="myLine"></span>Coaches assigned to you — today and previous 3 days</p>
 
     <div class="resume" id="resume">
       <div><div class="k">Pick up where you left off</div><div class="t" id="resumeTitle"></div><div class="s" id="resumeSub"></div></div>
@@ -132,7 +133,8 @@ const TYPES = {LHB:"LHB", NEW_LHB:"New LHB", THERMAL_LHB:"Thermal LHB", THERMAL_
 requireAuth();
 const user = getUser();
 if (user?.is_mgmt_staff) location.replace(MGMT_HOME); // SSE / HOD accounts belong on their own page
-$("userName").textContent = (user?.full_name || user?.username || "Inspection Staff") + " · IS";
+$("userName").textContent = (user?.full_name || user?.username || "Inspection Staff") + " · " + (user?.login_id || "IS");
+if (user) $("myLine").textContent = `Section ${user.section_code || "—"} · ${STAGE_LABEL[user.inspection_stage] || "—"} · `;
 
 let all = [], filter = "ALL";
 
@@ -172,7 +174,8 @@ function render(list) {
   box.innerHTML = `<div class="table-wrap"><table>
     <tr><th>Coach</th><th>Type</th><th>Status</th><th>Progress</th><th>Last saved</th><th></th></tr>
     ${list.map(v => { const p = prog(v); return `<tr>
-      <td class="coach">${esc(v.coach_number)}</td>
+      <td class="coach">${esc(v.coach_number)}${v.last_reassignment
+        ? `<small class="handed">↻ Handed to you from ${esc(v.last_reassignment.from_name)}</small>` : ""}</td>
       <td>${esc(TYPES[v.coach_type] || v.coach_type)}</td>
       <td>${pill(v)}</td>
       <td class="pgc">${p ? `${track(v)}<small>${p.done} of ${p.total} sections</small>` : "—"}</td>

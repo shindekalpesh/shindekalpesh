@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Main entry — Coach 04512</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Main entry — IR Workshop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,6 +23,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 .rail .mark{font-size:12px;font-weight:600;letter-spacing:.04em;color:#93A8BC;padding:0 22px 18px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:8px}
 .rail nav a{display:block;padding:10px 22px;color:#B9C8D6;text-decoration:none;font-size:14px;border-left:3px solid transparent}
 .rail nav a.active{background:rgba(255,255,255,.06);color:#fff;border-left-color:var(--orange);font-weight:500}
+.rail nav a.inactive{opacity:.45;pointer-events:none;cursor:default}
 .rail .who{margin-top:auto;padding:16px 22px 0;border-top:1px solid rgba(255,255,255,.12);font-size:13px;color:#93A8BC}
 .rail .who strong{color:#fff;display:block;margin-top:2px}
 .rail .logout{display:block;margin:10px 22px 0;font-size:12.5px;color:#93A8BC;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:var(--sans)}
@@ -30,15 +32,19 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font
 .sectionnav{border-right:1px solid var(--line);padding:28px 14px;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;background:var(--panel)}
 .sectionnav .head{padding:0 10px 14px}
 .sectionnav h1{font-size:17px;font-weight:600;margin:0}
-.sectionnav .coach{color:var(--ink-2);font-size:13px}
+.sectionnav .coachtype{color:var(--ink-2);font-size:13px}
+.sectionnav .assignee{margin-top:10px;padding:9px 10px;background:var(--line-2);border-radius:7px;font-size:12.5px;color:var(--ink-2);line-height:1.5}
+.sectionnav .assignee strong{color:var(--ink);font-weight:600}
+.sectionnav .assignee:empty{display:none}
 .sectionnav ol{list-style:none;margin:6px 0 0;padding:0}
 .sectionnav li{margin-bottom:2px}
 .sectionnav button{
   width:100%;text-align:left;background:none;border:none;padding:9px 10px;border-radius:7px;
   font-size:13.5px;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:9px;font-family:var(--sans)
 }
-.sectionnav button:hover{background:var(--line-2)}
+.sectionnav button:hover:not(.inactive){background:var(--line-2)}
 .sectionnav button.current{background:var(--blue-100);color:var(--blue);font-weight:600}
+.sectionnav button.inactive{opacity:.4;cursor:default;pointer-events:none}
 .dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
 .dot.done{background:var(--orange);border-color:var(--orange);color:#fff}
 .dot.current{border-color:var(--blue)}
@@ -59,6 +65,7 @@ main{padding:32px 46px 80px;max-width:700px}
 .field .label{font-size:14.5px}
 .field .label .code{color:var(--ink-3);font-size:12px;display:block;margin-top:2px}
 .field .tag{display:inline-block;font-size:10.5px;font-weight:500;color:var(--blue);background:var(--blue-100);padding:2px 8px;border-radius:5px;margin-left:8px;vertical-align:1px}
+.field .tag-cai{display:inline-block;font-size:10.5px;font-weight:500;color:#6B3A00;background:#FCEEDD;padding:2px 8px;border-radius:5px;margin-left:8px;vertical-align:1px}
 input, select, textarea{
   width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;
   font-family:var(--sans);font-size:14px;background:#fff;color:var(--ink)
@@ -104,15 +111,18 @@ textarea{resize:vertical;min-height:60px}
 .cnt{margin-left:auto;font-size:11.5px;color:var(--ink-3);font-weight:500}
 .sectionnav button.current .cnt{color:var(--blue)}
 input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:var(--ink-2);cursor:default}
+/* Phase nav in sidebar */
+.phase-group{margin-bottom:12px}
+.phase-label{font-size:11px;font-weight:600;letter-spacing:.06em;color:#93A8BC;padding:8px 10px 4px;text-transform:uppercase}
+.phase-label.active-phase{color:var(--orange)}
 </style>
 </head>
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / PL</div>
+    <div class="mark">IR-WORKSHOP / TL</div>
     <nav>
-      <a href="executive-dashboard.html" id="dashLink" style="display:none">Executive Dashboard</a>
-      <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
+      <a href="#" id="homeLink">My assignments</a>
       <a href="critical-parameters.html">Critical Parameters</a>
     </nav>
     <div class="who">
@@ -124,15 +134,17 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
   <div class="workspace">
     <aside class="sectionnav">
       <div class="head">
-        <h1 id="coachNo">Coach 04512</h1>
-        <div class="coach" id="coachType">LHB · Pre-inspection</div>
+        <h1 id="coachNo">Coach —</h1>
+        <div class="coachtype" id="coachType">LHB Non-AC</div>
+        <div class="assignee" id="assignee"></div>
       </div>
-      <ol id="navlist"></ol>
+      <!-- Phase groups injected by JS -->
+      <div id="navlist"></div>
     </aside>
 
     <main>
       <div class="topbar">
-        <div class="topline">Section <span id="secnum">1</span> of <span id="sectotal">8</span> · <span id="doneCount">0</span> complete<span id="flagLine"></span></div>
+        <div class="topline">Section <span id="secnum">1</span> of <span id="sectotal">—</span> · <span id="doneCount">0</span> complete<span id="flagLine"></span></div>
         <div id="sheetExport"></div>
       </div>
       <div class="progresswrap">
@@ -140,82 +152,8 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
         <span class="pct" id="progresspct">0%</span>
       </div>
 
-      <div class="panel show" data-section="0">
-        <h2>Contactor load test</h2>
-        <p class="sub">Numeric amp readings, one contactor at a time.</p>
-        <div class="field"><div class="label">Pump 1.1<span class="code">K-24 · amp</span></div><input type="number" placeholder="0.0"></div>
-        <div class="field"><div class="label">Compressor 1.1<span class="code">K-33 · amp</span></div><input type="number" placeholder="0.0"></div>
-        <div class="field"><div class="label">Blower motor 1.1<span class="code">K-26 · amp</span></div><input type="number" placeholder="0.0"></div>
-        <div class="field"><div class="label">Compressor 1.2<span class="code">K-34 · amp</span></div><input type="number" placeholder="0.0"></div>
-        <div class="field"><div class="label">RBC contactor<span class="tag">Mission-critical</span><span class="code">K-30 · amp</span></div><input type="number" placeholder="0.0"></div>
-        <div class="field"><div class="label">Heater PP 2.1<span class="code">K-40 · amp</span></div><input type="number" placeholder="0.0"></div>
-      </div>
-
-      <div class="panel" data-section="1">
-        <h2>Insulation resistance test</h2>
-        <p class="sub">Value observed per voltage class.</p>
-        <div class="field"><div class="label">750V circuit<span class="tag">Mission-critical</span><span class="code">min. 05 MΩ</span></div><input type="number" placeholder="MΩ"></div>
-        <div class="field"><div class="label">415V circuit<span class="code">min. 03 MΩ</span></div><input type="number" placeholder="MΩ"></div>
-        <div class="field"><div class="label">230V circuit<span class="code">min. 02 MΩ</span></div><input type="number" placeholder="MΩ"></div>
-        <div class="field"><div class="label">110V circuit<span class="code">min. 02 MΩ</span></div><input type="number" placeholder="MΩ"></div>
-        <div class="field"><div class="label">24V circuit<span class="code">min. 01 MΩ</span></div><input type="number" placeholder="MΩ"></div>
-      </div>
-
-      <div class="panel" data-section="2">
-        <h2>Equipment health checklist</h2>
-        <p class="sub">Electrical fittings, AC & pantry, and lighting — status per item.</p>
-        <div class="field"><div class="label">MMR</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Contactors</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Deep freezer</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Return filter</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Tube light (S)</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Earthing</div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-      </div>
-
-      <div class="panel" data-section="3">
-        <h2>Detailed technical verification</h2>
-        <p class="sub">Mixed make/model text fields and status checks.</p>
-        <div class="field"><div class="label">HP cut-out, PP side<span class="tag">Mission-critical</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">LP cut-out, NPP side<span class="tag">Mission-critical</span></div><select><option>Select</option><option>OK</option><option>Not OK</option></select></div>
-        <div class="field"><div class="label">Earthing device<span class="tag">Mission-critical</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
-        <div class="field"><div class="label">Power panel make</div><input type="text" placeholder="Manufacturer name"></div>
-        <div class="field"><div class="label">EBC cum RBC<span class="tag">Mission-critical</span></div><select><option>Select</option><option>Working</option><option>Not working</option></select></div>
-      </div>
-
-      <div class="panel" data-section="4">
-        <h2>Modification tracking log</h2>
-        <p class="sub">Fixed list of known field modifications.</p>
-        <div class="field"><div class="label">Blower heater modification</div><select><option>Select</option><option>To be done</option><option>Already done</option></select></div>
-        <div class="field"><div class="label">200VA transformer modification</div><select><option>Select</option><option>To be done</option><option>Already done</option></select></div>
-        <div class="field"><div class="label">Rodent protection (mouse plate)</div><select><option>Select</option><option>To be done</option><option>Already done</option></select></div>
-      </div>
-
-      <div class="panel" data-section="5">
-        <h2>Pre-cooling performance test</h2>
-        <p class="sub">Cut-in / cut-out temperature and timing.</p>
-        <div class="field"><div class="label">Rotary switch position</div><input type="text" placeholder="Position"></div>
-        <div class="field"><div class="label">Coach temp at cut-in</div><input type="number" placeholder="°C"></div>
-        <div class="field"><div class="label">Coach temp at cut-out</div><input type="number" placeholder="°C"></div>
-        <div class="field"><div class="label">Time taken</div><input type="number" placeholder="minutes"></div>
-      </div>
-
-      <div class="panel" data-section="6">
-        <h2>Power car / DG-set</h2>
-        <p class="sub">Set A and Set B details, where applicable.</p>
-        <div class="field"><div class="label">Make of DG set, Set A</div><input type="text" placeholder="Manufacturer"></div>
-        <div class="field"><div class="label">Diesel tank status, Set A</div><select><option>Select</option><option>Full</option><option>Empty</option><option>Partially filled</option></select></div>
-        <div class="field"><div class="label">Battery cell-end connections, Set A</div><select><option>Select</option><option>Disconnected</option><option>Not disconnected</option></select></div>
-      </div>
-
-      <div class="panel" data-section="7">
-        <h2>Earthing & deficiency declaration</h2>
-        <p class="sub">Final coach-level checks before sign-off.</p>
-        <div class="field"><div class="label">Shut-off valve / live terminal<span class="tag">Mission-critical</span></div><select><option>Select</option><option>Earthed</option><option>Not earthed</option></select></div>
-        <div class="field fullrow">
-          <div class="label">Any other deficiency</div>
-          <textarea placeholder="Describe the issue, if any"></textarea>
-        </div>
-      </div>
+      <!-- Panels injected by JS based on inspection_stage -->
+      <div id="panelContainer"></div>
 
       <div class="navbtns">
         <button id="prevBtn">← Previous section</button>
@@ -223,7 +161,7 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
       </div>
 
       <div class="footer-bar">
-        <div class="saved"><span class="glow"></span><span id="savedText">Last saved 2 min ago</span></div>
+        <div class="saved"><span class="glow"></span><span id="savedText">Not saved yet</span></div>
         <div class="actions">
           <button class="btn-secondary" id="saveBtn">Save and continue</button>
           <button class="btn-primary" id="submitBtn">Submit</button>
@@ -236,88 +174,226 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
 <script src="api.js"></script>
 <script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
 <script>
-const sections = [
-  "Contactor load test","Insulation resistance","Equipment health","Technical verification",
-  "Modification log","Pre-cooling test","Power car / DG-set","Earthing & deficiency"
-];
+"use strict";
+// ── Bootstrap: auth and visit ──
+requireAuth();
+const me = getUser();
+const params = new URLSearchParams(location.search);
+const visit = getVisit(+params.get("visit_id") || 1);
+// A coach reassigned away from this inspector stays viewable but can no longer be edited by them
+const notMine = !!visit && me?.role === ROLE_IS && visit.assigned_to !== me.id;
+const readOnly = params.get("readonly") === "1" || visit?.status === "SUBMITTED" || notMine;
 const $ = id => document.getElementById(id);
-const panels = [...document.querySelectorAll(".panel")];
-const navlist = $("navlist");
-let current = 0;
 
-// ── Section status comes from the fields themselves, so the left panel, progress bar and summaries always agree ──
-const isFilled = c => c.value.trim() !== "" && c.value !== "Select";
-const controls = i => [...panels[i].querySelectorAll(".field")].map(f => f.querySelector("input,select,textarea"));
+// Where does this user go "home"?
+$("homeLink").href = homeFor(me);
+$("homeLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
+$("userName").textContent = (me?.full_name || "") + " · " + (me?.role || "IS");
+
+// ── Determine which phase this sheet shows ──
+// The visit's own stage decides the form (assignments only go to staff of that stage);
+// with no visit, IS staff fall back to their inspection_stage and SSE / MG to pre-inspection.
+const myStage = visit?.inspection_phase
+  || ((me?.role === ROLE_IS) ? (me.inspection_stage || STAGE_PRE) : STAGE_PRE);
+
+// Phase meta (all three always shown in sidebar; only myStage is active)
+const PHASES = [
+  { id: STAGE_PRE,   label: "Pre-inspection",      sections: SECTION_NAMES_PRE,   fields: FORM_FIELDS_PRE },
+  { id: STAGE_POH,   label: "POH / Modification",  sections: SECTION_NAMES_POH,   fields: FORM_FIELDS_POH },
+  { id: STAGE_FINAL, label: "Final inspection",     sections: SECTION_NAMES_FINAL, fields: FORM_FIELDS_FINAL }
+];
+const activePhase = PHASES.find(p => p.id === myStage) || PHASES[0];
+const SECTIONS   = activePhase.sections;
+const FIELDS     = activePhase.fields;
+
+// ── Build panels from schema ──
+// Field type heuristics
+function fieldType(label) {
+  const l = label.toLowerCase();
+  if (/\b(amp|mΩ|°c|minute|position|make|make of|name|remarks|replaced|list|observations|sign-off|deficiency)\b/.test(l)) {
+    if (/remarks|deficiency|observations|list|items|sign-off/.test(l)) return "textarea";
+    if (/make of|manufacturer|name|make$/.test(l)) return "text";
+    return "number";
+  }
+  return "select";
+}
+
+function selectOptionsFor(label) {
+  const l = label.toLowerCase();
+  if (/status/.test(l) && /diesel/.test(l)) return ["Full", "Empty", "Partially filled"];
+  if (/battery|cell.*connection/.test(l)) return ["Disconnected", "Not disconnected"];
+  if (/earthing device|shut.off|earthing verified/.test(l)) return ["Earthed", "Not earthed"];
+  if (/cai|modification|rodent|transformer|wiring|insulation|inspection|protection|service|overhaul|calibration|refurbishment|replacement|fitment|bonding|bus check|circuit|coupler|buffer|bogie|door/.test(l)) return ["Done", "Not done", "Not applicable"];
+  if (/ebc|rbc|functional|fan|pa |emergency|working/.test(l)) return ["Working", "Not working"];
+  if (/mmr|contactor|filter|tube|window|floor|roof|body|fire|extinguisher|exit/.test(l)) return ["OK", "Not OK"];
+  if (/earthing$/.test(l)) return ["OK", "Not OK"];
+  if (/hp cut|lp cut|power panel|make$/.test(l)) return ["OK", "Not OK"];
+  return ["OK", "Not OK"];
+}
+
+const isMissionCritical = (phaseId, si, fi) => {
+  if (phaseId !== STAGE_PRE) return false;
+  return MISSION_CRITICAL_PARAMS.some(p => p.section === si && p.index === fi);
+};
+const isCAI = (phaseId, si) => phaseId === STAGE_POH && si === 0;
+
+function buildField(phaseId, si, fi, label) {
+  const mc = isMissionCritical(phaseId, si, fi);
+  const cai = isCAI(phaseId, si);
+  const type = fieldType(label);
+  const isTextarea = type === "textarea";
+  const isText = type === "text" || type === "textarea";
+
+  let inputHtml;
+  if (type === "select") {
+    const opts = selectOptionsFor(label);
+    inputHtml = `<select data-si="${si}" data-fi="${fi}"><option value="">Select</option>${opts.map(o => `<option>${o}</option>`).join("")}</select>`;
+  } else if (type === "textarea") {
+    inputHtml = `<textarea data-si="${si}" data-fi="${fi}" placeholder="Enter details"></textarea>`;
+  } else if (type === "text") {
+    inputHtml = `<input type="text" data-si="${si}" data-fi="${fi}" placeholder="Enter value">`;
+  } else {
+    inputHtml = `<input type="number" data-si="${si}" data-fi="${fi}" placeholder="0.0">`;
+  }
+
+  const mcBadge = mc ? '<span class="tag">Mission-critical</span>' : "";
+  const caiBadge = cai ? '<span class="tag-cai">CAI</span>' : "";
+  const cls = isTextarea ? "field fullrow" : "field";
+  return `<div class="${cls}" data-field-si="${si}" data-field-fi="${fi}">
+    <div class="label">${esc(label)}${mcBadge}${caiBadge}</div>
+    ${isTextarea ? inputHtml : inputHtml}
+  </div>`;
+}
+
+const panelContainer = $("panelContainer");
+SECTIONS.forEach((name, si) => {
+  const div = document.createElement("div");
+  div.className = "panel" + (si === 0 ? " show" : "");
+  div.dataset.section = si;
+  const fieldsHtml = FIELDS[si].map((label, fi) => buildField(activePhase.id, si, fi, label)).join("");
+  div.innerHTML = `<div class="panelhead"><div><h2>${esc(name)}</h2><p class="sub">&nbsp;</p></div></div>${fieldsHtml}`;
+  panelContainer.appendChild(div);
+});
+
+const panels = [...panelContainer.querySelectorAll(".panel")];
+const controls = i => [...panels[i].querySelectorAll("input,select,textarea")];
+const isFilled = c => c.value.trim() !== "" && c.value !== "Select" && c.value !== "";
+
 function stat(i) {
-  const req = controls(i).filter(c => c.tagName !== "TEXTAREA");      // the free-text deficiency note is optional
+  const req = controls(i).filter(c => c.tagName !== "TEXTAREA");
   const n = req.filter(isFilled).length;
   return { n, total: req.length, status: n === 0 ? "empty" : n === req.length ? "done" : "partial" };
 }
-const doneCount = () => sections.filter((_, i) => stat(i).status === "done").length;
-const snapshot = () => panels.map((_, i) => controls(i).map(c => c.value));   // saved as-is with the coach
+const doneCount = () => SECTIONS.filter((_, i) => stat(i).status === "done").length;
+const snapshot = () => panels.map((_, i) => controls(i).map(c => c.value));
 
-sections.forEach((name, i) => {
-  const li = document.createElement("li"), btn = document.createElement("button");
-  btn.innerHTML = `<span class="dot" id="dot-${i}"></span><span class="nm">${name}</span><span class="cnt" id="cnt-${i}"></span>`;
-  btn.onclick = () => goTo(i);
-  li.appendChild(btn); navlist.appendChild(li);
+// ── Sidebar nav ──
+// Three phase groups. Active phase shows section buttons. Other phases show as greyed-out group label only.
+const navlist = $("navlist");
+
+PHASES.forEach(phase => {
+  const isActive = phase.id === activePhase.id;
+  const group = document.createElement("div");
+  group.className = "phase-group";
+
+  const phaseLabel = document.createElement("div");
+  phaseLabel.className = "phase-label" + (isActive ? " active-phase" : "");
+  phaseLabel.textContent = phase.label;
+  group.appendChild(phaseLabel);
+
+  if (isActive) {
+    const ol = document.createElement("ol");
+    ol.style.listStyle = "none"; ol.style.margin = "0"; ol.style.padding = "0";
+    SECTIONS.forEach((name, i) => {
+      const li = document.createElement("li"), btn = document.createElement("button");
+      btn.innerHTML = `<span class="dot" id="dot-${i}"></span><span class="nm">${name}</span><span class="cnt" id="cnt-${i}"></span>`;
+      btn.id = "navbtn-" + i;
+      btn.onclick = () => goTo(i);
+      li.appendChild(btn); ol.appendChild(li);
+    });
+    group.appendChild(ol);
+  } else {
+    // Greyed-out section stubs for non-active phases
+    const ol = document.createElement("ol");
+    ol.style.listStyle = "none"; ol.style.margin = "0"; ol.style.padding = "0";
+    phase.sections.forEach(name => {
+      const li = document.createElement("li"), btn = document.createElement("button");
+      btn.className = "inactive";
+      btn.innerHTML = `<span class="dot"></span><span class="nm">${name}</span>`;
+      li.appendChild(btn); ol.appendChild(li);
+    });
+    group.appendChild(ol);
+  }
+  navlist.appendChild(group);
 });
+
+let current = 0;
 
 function render() {
   panels.forEach((p, i) => p.classList.toggle("show", i === current));
-  document.querySelectorAll("#navlist button").forEach((b, i) => b.classList.toggle("current", i === current));
+  document.querySelectorAll("#navlist button:not(.inactive)").forEach((b, i) => b.classList.toggle("current", i === current));
   let done = 0;
-  sections.forEach((_, i) => {
+  SECTIONS.forEach((_, i) => {
     const s = stat(i), dot = $("dot-" + i);
+    if (!dot) return;
     dot.className = "dot" + (s.status === "done" ? " done" : s.status === "partial" ? " partial" : "") + (i === current && s.status !== "done" ? " current" : "");
     dot.textContent = s.status === "done" ? "✓" : "";
-    $("cnt-" + i).textContent = s.n + "/" + s.total;
+    const cnt = $("cnt-" + i);
+    if (cnt) cnt.textContent = s.n + "/" + s.total;
     if (s.status === "done") done++;
   });
+
+  // Flag highlighting (only meaningful for pre-inspection which has MIN_SPEC)
   let flaggedCount = 0;
-  panels.forEach((p, i) => controls(i).forEach((c, k) => {
-    if (FORM_FIELDS[i][k] === "Any other deficiency") return;
-    const flagged = paramState(i, k, c.value.trim()) === "flagged";
-    c.classList.toggle("flagged-input", flagged);
-    c.closest(".field").classList.toggle("field-flagged", flagged);
-    if (flagged) flaggedCount++;
-  }));
+  if (activePhase.id === STAGE_PRE) {
+    panels.forEach((p, si) => controls(si).forEach((c, fi) => {
+      if (FIELDS[si][fi] === "Any other deficiency") return;
+      const flagged = paramState(si, fi, c.value.trim()) === "flagged";
+      c.classList.toggle("flagged-input", flagged);
+      c.closest(".field").classList.toggle("field-flagged", flagged);
+      if (flagged) flaggedCount++;
+    }));
+  }
   $("flagLine").textContent = flaggedCount ? ` · ${flaggedCount} flagged` : "";
   $("flagLine").className = flaggedCount ? "flagcount" : "";
 
-  const pct = Math.round(done / sections.length * 100);
+  const pct = Math.round(done / SECTIONS.length * 100);
   $("secnum").textContent = current + 1;
-  $("sectotal").textContent = sections.length;
+  $("sectotal").textContent = SECTIONS.length;
   $("doneCount").textContent = done;
   $("progressbar").style.width = pct + "%";
   $("progresspct").textContent = pct + "%";
   $("prevBtn").disabled = current === 0;
-  $("nextBtn").disabled = current === sections.length - 1;
+  $("nextBtn").disabled = current === SECTIONS.length - 1;
 }
+
 function goTo(i) { current = i; render(); }
 $("prevBtn").onclick = () => goTo(Math.max(0, current - 1));
-$("nextBtn").onclick = () => goTo(Math.min(sections.length - 1, current + 1));
-document.querySelector("main").addEventListener("input", render);
-document.querySelector("main").addEventListener("change", render);
+$("nextBtn").onclick = () => goTo(Math.min(SECTIONS.length - 1, current + 1));
+panelContainer.addEventListener("input", render);
+panelContainer.addEventListener("change", render);
 
-// ── Export: one section, or the entire sheet (CSV / Excel / PDF) ──
+// ── Export (SSE / HOD only) ──
+const canExport = me?.is_mgmt_staff;
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 function sectionRows(i) {
   return [...panels[i].querySelectorAll(".field")].map(f => {
-    const lab = f.querySelector(".label"), c = f.querySelector("input,select,textarea"), code = lab.querySelector(".code");
+    const lab = f.querySelector(".label"), c = f.querySelector("input,select,textarea");
+    const code = lab.querySelector(".code");
     return [lab.firstChild.textContent.trim(), code ? code.textContent.trim() : "", lab.querySelector(".tag") ? "Yes" : "No", isFilled(c) ? c.value.trim() : "Not entered"];
   });
 }
 let coachNo = "coach";
 function exportSection(i, format) {
-  exportRows(exportFileBase(coachNo, slug(sections[i])), `Coach ${coachNo} — ${sections[i]}`,
-    ["Parameter", "Spec / code", "Flagged", "Value"], sectionRows(i), format);
+  exportRows(exportFileBase(coachNo, slug(SECTIONS[i])), `Coach ${coachNo} — ${SECTIONS[i]}`,
+    ["Parameter", "Spec / code", "Mission-critical", "Value"], sectionRows(i), format);
 }
 function exportSheet(format) {
   const rows = [];
-  sections.forEach((name, i) => sectionRows(i).forEach(r => rows.push([name, ...r])));
-  exportRows(exportFileBase(coachNo, "inspection-sheet"), `Coach ${coachNo} — Pre-inspection sheet`,
-    ["Section", "Parameter", "Spec / code", "Flagged", "Value"], rows, format);
+  SECTIONS.forEach((name, i) => sectionRows(i).forEach(r => rows.push([name, ...r])));
+  const who = visit ? ` — ${staffLabel(visit.assigned_to_name, visit.assigned_to_login)}, Section ${visit.section_code || "—"}` : "";
+  exportRows(exportFileBase(coachNo, activePhase.id + "-sheet"), `Coach ${coachNo} — ${activePhase.label}${who}`,
+    ["Section", "Parameter", "Spec / code", "Mission-critical", "Value"], rows, format);
 }
 function closeMenus() { document.querySelectorAll(".menu.show").forEach(m => { m.classList.remove("show"); m.previousElementSibling.setAttribute("aria-expanded", "false"); }); }
 function exportDropdown(label, solid, onPick) {
@@ -343,79 +419,82 @@ function exportDropdown(label, solid, onPick) {
   return wrap;
 }
 document.addEventListener("click", closeMenus);
-const canExport = getUser()?.is_mgmt_staff;      // export is an SSE / HOD tool — not relevant to inspection staff filling the form
-panels.forEach((p, i) => {                       // per-section Export button next to each section title (SSE / HOD only)
-  const h2 = p.querySelector("h2"), sub = p.querySelector(".sub"), head = document.createElement("div"), left = document.createElement("div");
-  head.className = "panelhead"; p.insertBefore(head, h2);
-  left.appendChild(h2); left.appendChild(sub); head.appendChild(left);
-  if (canExport) head.appendChild(exportDropdown("Export section", false, f => exportSection(i, f)));
-});
-if (canExport) $("sheetExport").appendChild(exportDropdown("Export entire sheet", true, exportSheet));
 
-// ── Demo wiring ──────────────────────────────
-requireAuth();
-const me = getUser();
-const params = new URLSearchParams(location.search);
-const visit = getVisit(+params.get("visit_id") || 1);          // opened directly: shows coach 04512
-const TYPE_NAMES = { LHB: "LHB", NEW_LHB: "New LHB", THERMAL_LHB: "Thermal LHB", THERMAL_SG: "Thermal SG" };
-const readOnly = params.get("readonly") === "1" || visit?.status === "SUBMITTED";
-
-$("userName").textContent = (me?.full_name || "") + (me?.is_mgmt_staff ? " · SSE / HOD" : " · IS");
-$("summaryLink").href = me?.is_mgmt_staff ? MGMT_HOME : IS_HOME;
-$("summaryLink").textContent = me?.is_mgmt_staff ? "Summary" : "My assignments";
-$("dashLink").style.display = me?.is_mgmt_staff ? "" : "none";
-
-function fillSection(i) {   // used only when opening the seeded demo coach with nothing saved yet
-  const entry = demoEntryFor(visit.id);
-  if (!entry) return;
-  controls(i).forEach((c, k) => { if (entry[i][k]) c.value = entry[i][k]; });
+if (canExport) {
+  panels.forEach((p, i) => {
+    const panelhead = p.querySelector(".panelhead");
+    if (panelhead) panelhead.appendChild(exportDropdown("Export section", false, f => exportSection(i, f)));
+  });
+  $("sheetExport").appendChild(exportDropdown("Export entire sheet", true, exportSheet));
 }
+
+// ── Coach / visit wiring ──
+const TYPE_NAMES = { LHB_NON_AC: "LHB Non-AC", LHB_AC: "LHB AC", ICF_NON_AC: "ICF Non-AC", ICF_AC: "ICF AC" };
+
 if (visit) {
   coachNo = visit.coach_number;
   $("coachNo").textContent = "Coach " + visit.coach_number;
-  $("coachType").textContent = (TYPE_NAMES[visit.coach_type] || visit.coach_type) + " · Pre-inspection";
+  $("coachType").textContent = (TYPE_NAMES[visit.coach_type] || visit.coach_type) + " · " + activePhase.label;
   document.title = "Main entry — Coach " + visit.coach_number;
+  $("assignee").innerHTML = `Inspector <strong>${esc(visit.assigned_to_name || "—")}</strong> · ${esc(visit.assigned_to_login || "—")}<br>Section ${esc(visit.section_code || "—")}`;
 
-  if (visit.entry) {                                   // values saved earlier from this page
-    visit.entry.forEach((vals, i) => controls(i).forEach((c, k) => { c.value = vals[k]; }));
-  } else if (DEMO_DATA) {                              // sample readings for the demo coaches
-    const upTo = visit.status === "SUBMITTED" ? sections.length : (visit.id === 1 ? 4 : (visit.sections_completed || 0));
-    for (let i = 0; i < upTo; i++) fillSection(i);
+  // Restore saved values or fill demo data (pre-inspection only)
+  if (visit.entry && visit.entry.length === panels.length) {
+    visit.entry.forEach((vals, i) => controls(i).forEach((c, k) => { if (vals[k] !== undefined) c.value = vals[k]; }));
+  } else if (DEMO_DATA && activePhase.id === STAGE_PRE) {
+    const entry = demoEntryFor(visit.id);
+    if (entry) {
+      const upTo = visit.status === "SUBMITTED" ? SECTIONS.length : (visit.id === 1 ? 4 : (visit.sections_completed || 0));
+      for (let i = 0; i < upTo && i < panels.length; i++) {
+        controls(i).forEach((c, k) => { if (entry[i] && entry[i][k]) c.value = entry[i][k]; });
+      }
+    }
   }
-  const firstOpen = sections.findIndex((_, i) => stat(i).status !== "done");
-  current = readOnly || firstOpen < 0 ? 0 : firstOpen;   // resume at the first section that isn't complete
+
+  const firstOpen = SECTIONS.findIndex((_, i) => stat(i).status !== "done");
+  current = readOnly || firstOpen < 0 ? 0 : firstOpen;
 
   const savedText = $("savedText");
-  savedText.textContent = readOnly ? "View only" : (visit.last_saved_on ? "Last saved " + fmtDateTime(visit.last_saved_on) : "Not saved yet");
+  savedText.textContent = notMine ? `Reassigned to ${staffLabel(visit.assigned_to_name, visit.assigned_to_login)} — view only`
+    : readOnly ? "View only" : (visit.last_saved_on ? "Last saved " + fmtDateTime(visit.last_saved_on) : "Not saved yet");
+  if (visit.last_reassignment) {
+    const r = visit.last_reassignment;
+    $("assignee").innerHTML += `<br>Reassigned from ${esc(staffLabel(r.from_name, r.from_login))} · ${esc(REASSIGN_REASONS[r.reason] || r.reason)}`;
+  }
+
   if (readOnly) {
-    document.querySelectorAll("input,select,textarea").forEach(el => el.disabled = true);
+    panelContainer.querySelectorAll("input,select,textarea").forEach(el => el.disabled = true);
     $("saveBtn").style.display = $("submitBtn").style.display = "none";
   }
+
   $("saveBtn").onclick = () => {
-    saveVisitProgress(visit.id, doneCount(), snapshot());
+    if (!saveVisitProgress(visit.id, doneCount(), snapshot()))
+      return showToast("This coach is no longer assigned to you, so it can't be saved.", "error");
     savedText.textContent = "Last saved just now";
     showToast("Progress saved.");
-    if (current < sections.length - 1) goTo(current + 1);   // "Save and continue"
+    if (current < SECTIONS.length - 1) goTo(current + 1);
   };
+
   $("submitBtn").onclick = () => {
-    const firstIncomplete = sections.findIndex((_, i) => stat(i).status !== "done");
+    const firstIncomplete = SECTIONS.findIndex((_, i) => stat(i).status !== "done");
     if (firstIncomplete >= 0) {
-      showToast("Every parameter must be recorded before you can submit — " + sections[firstIncomplete] + " is incomplete.", "error");
+      showToast("Every parameter must be recorded before you can submit — " + SECTIONS[firstIncomplete] + " is incomplete.", "error");
       goTo(firstIncomplete);
       return;
     }
-    submitVisit(visit.id, doneCount(), snapshot());
+    if (!submitVisit(visit.id, doneCount(), snapshot()))
+      return showToast("This coach is no longer assigned to you, so it can't be submitted.", "error");
     showToast("Inspection submitted.");
-    setTimeout(() => { location.href = IS_HOME; }, 900);
+    setTimeout(() => { location.href = homeFor(me); }, 900);
   };
-} else {   // no such coach (e.g. clean start, nothing assigned yet)
+} else {
   $("coachNo").textContent = "No coach selected";
   $("coachType").textContent = "Open a coach from your assignments";
   $("savedText").textContent = "";
   $("saveBtn").style.display = $("submitBtn").style.display = "none";
   $("sheetExport").style.display = "none";
-  document.querySelectorAll(".panelhead .dropdown").forEach(d => d.style.display = "none");
 }
+
 render();
 </script>
 </body>

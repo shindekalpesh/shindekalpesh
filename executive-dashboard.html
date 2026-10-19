@@ -90,8 +90,8 @@ td.coach{font-weight:600;color:var(--navy);white-space:nowrap}
       <a href="sse-hod-summary.html">Summary</a>
       <a href="critical-parameters.html">Critical Parameters</a>
     </nav>
-    <div class="who">Logged in as<strong>M.S. Dhoni · SSE / HOD</strong>
-      <button class="logout">Sign out</button></div>
+    <div class="who">Logged in as<strong id="userName">—</strong>
+      <button class="logout" onclick="logout()">Sign out</button></div>
   </aside>
 
   <main>
@@ -188,6 +188,18 @@ td.coach{font-weight:600;color:var(--navy);white-space:nowrap}
   </main>
 </div>
 
+<script src="api.js"></script>
+<script>if (typeof requireAuth === "undefined") document.body.innerHTML = '<p style="font:16px sans-serif;padding:40px;max-width:520px">api.js was not found next to this page. Keep api.js in the same folder as the HTML files.</p>';</script>
+<script>
+// Auth: only management (MG) accounts may view this page
+requireAuth();
+const _me = getUser();
+if (!_me?.is_management) {
+  // SSE / non-management staff go to their own home
+  location.replace(_me?.is_mgmt_staff ? SSE_HOME : IS_HOME);
+}
+document.getElementById("userName").textContent = (_me?.full_name || "Management") + " · Management";
+</script>
 <script>
 (function(){const el=document.getElementById("todayDate");
   const show=()=>el.textContent=new Date().toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
