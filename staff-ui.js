@@ -191,11 +191,11 @@ const StaffForm = (() => {
     open("Create staff user account", "The staff member can sign in with these details right away.",
       `<div class="sf-grid">${field("full_name", true)}${field("staff_id")}${field("contact")}${field("inspection_stage")}${field("section")}${field("email", true)}${field("password")}</div>` +
       actions("Reset form", "Create user"));
-    el("sf_section").value = getUser()?.section_code || "—";
+    el("sf_section").value = getUser()?.section_code ? sectionName(getUser().section_code) : "—";
     el("sf_secondary").onclick = () => create(onSaved);
     wire(names);
     onSubmit(names, body => apiFetch(`${API}/staff/`, { method: "POST", body: JSON.stringify(body) }), s => {
-      showToast(`Staff user ${s.full_name} (${s.login_id}) created — ${STAGE_LABEL[s.inspection_stage]}, section ${s.section_code}.`);
+      showToast(`Staff user ${s.full_name} (${s.login_id}) created — ${STAGE_LABEL[s.inspection_stage]}, ${sectionName(s.section_code)} section.`);
       onSaved && onSaved(s);
     });
     el("sf_full_name").focus();
@@ -211,7 +211,7 @@ const StaffForm = (() => {
     el("sf_staff_id_msg").textContent = "The sign-in ID can't be changed.";
     el("sf_contact").value = s.contact ? fmtContact(s.contact).replace(/^\+91 /, "") : "";
     el("sf_inspection_stage").value = s.inspection_stage || "";
-    el("sf_section").value = s.section_code || "—";
+    el("sf_section").value = s.section_code ? sectionName(s.section_code) : "—";
     el("sf_email").value = s.email || "";
     if (s.open_coaches && s.open_coaches.length) {
       // Stage is locked while coaches are unfinished — the API refuses the change too
@@ -255,10 +255,10 @@ const StaffForm = (() => {
     const staffOpts = choices.length
       ? '<option value="">Select inspector</option>' + choices.map(s =>
           `<option value="${s.id}">${esc(s.full_name)} — ${esc(s.login_id)} · ${s.current_assignments.active ? s.current_assignments.active + " active" : "free"}</option>`).join("")
-      : `<option value="">No other active ${esc(stage)} inspector in section ${esc(v.section_code)}</option>`;
+      : `<option value="">No other active ${esc(stage)} inspector in the ${esc(sectionName(v.section_code))} section</option>`;
     const reasonOpts = '<option value="">Select reason</option>' +
       Object.entries(REASSIGN_REASONS).map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("");
-    const toHelp = choices.length ? `Active ${stage} inspectors in section ${v.section_code}, least busy first.`
+    const toHelp = choices.length ? `Active ${stage} inspectors in the ${sectionName(v.section_code)} section, least busy first.`
       : "Create or reactivate an inspector for this stage on the IS Staff page.";
     const remarksHelp = "Required when the reason is Other. Up to 200 characters.";
 

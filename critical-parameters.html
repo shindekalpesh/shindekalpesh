@@ -85,7 +85,7 @@ h1{font-size:21px;font-weight:600;margin:0}
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / PL</div>
+    <div class="mark">DIMS</div>
     <nav>
       <a href="executive-dashboard.html" id="dashLink" style="display:none">Executive Dashboard</a>
       <a href="sse-hod-summary.html" id="summaryLink">Summary</a>
@@ -177,7 +177,7 @@ if (!visit) {
   document.getElementById("ccStatus").textContent = statusOf(visit);
   document.getElementById("ccDate").textContent = visit.submitted_on ? fmtDateTime(visit.submitted_on) : visit.last_saved_on ? fmtDateTime(visit.last_saved_on) : "Not saved yet";
   document.getElementById("ccInspector").textContent = visit.assigned_to_name ? staffLabel(visit.assigned_to_name, visit.assigned_to_login) : "Unassigned";
-  document.getElementById("ccSection").textContent = visit.section_code || "—";
+  document.getElementById("ccSection").textContent = visit.section_code ? sectionName(visit.section_code) : "—";
   const phase = visit.inspection_phase || STAGE_PRE;
   document.getElementById("ccStage").textContent = STAGE_LABEL[phase] || phase;
   document.getElementById("ccSections").textContent = (visit.sections_completed ?? 0) + " of " + (visit.sections_total || 8);

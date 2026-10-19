@@ -111,7 +111,7 @@ td.act .arrow{display:inline-block;margin-left:10px;vertical-align:middle}
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / PL</div>
+    <div class="mark">DIMS</div>
     <nav>
       <a href="executive-dashboard.html">Executive Dashboard</a>
       <a class="active" href="sse-hod-summary.html">
@@ -294,10 +294,10 @@ if (!user?.is_mgmt_staff) location.replace(IS_HOME);
 // MG (management) accounts go to the executive dashboard, not here
 if (user?.is_management) location.replace(MGMT_HOME);
 
-const mySection = user?.section_code || "—";
+const mySection = user?.section_code ? sectionName(user.section_code) : "—";
 document.getElementById("userName").textContent =
-  (user?.full_name || user?.username || "SSE/HOD") + " · SSE / HOD · Section " + mySection;
-document.getElementById("secLine").textContent = "Section " + mySection + " · ";
+  (user?.full_name || user?.username || "SSE/HOD") + " · SSE / HOD · " + mySection;
+document.getElementById("secLine").textContent = mySection + " section · ";
 
 const STAGE_COLOR = { pre_inspection: "#2F6690", poh_or_modification: "#E8871E", final_inspection: "#2E7D4F" };
 function stageTag(phase) {
@@ -347,7 +347,7 @@ function renderTable(visits) {
       <td class="coach">${esc(v.coach_number)}</td>
       <td>${esc(v.assigned_to_name || "—")}<span class="sid">${esc(v.assigned_to_login || "")}</span>${v.last_reassignment
         ? `<span class="rnote" title="${esc(REASSIGN_REASONS[v.last_reassignment.reason] || "")}">↻ Reassigned from ${esc(v.last_reassignment.from_name)}</span>` : ""}</td>
-      <td><span class="sec">${esc(v.section_code || "—")}</span></td>
+      <td><span class="sec">${esc(v.section_code ? sectionName(v.section_code) : "—")}</span></td>
       <td>${stageTag(v.inspection_phase)}</td>
       <td>${esc(v.coach_type)}</td>
       <td>${statusPill(v.status, v.flagged_count)}</td>
@@ -492,9 +492,9 @@ function fillStaffOptions() {
   sel.innerHTML = list.length
     ? '<option value="">Select inspection staff</option>' +
       list.map(u => `<option value="${u.id}">${esc(u.full_name)} — ${esc(u.login_id)} · ${u.current_assignments.active ? u.current_assignments.active + " active" : "free"}</option>`).join("")
-    : `<option value="">No ${esc(STAGE_LABEL[stage])} staff in section ${esc(mySection)}</option>`;
+    : `<option value="">No ${esc(STAGE_LABEL[stage])} staff in the ${esc(mySection)} section</option>`;
   msg.textContent = list.length
-    ? `${list.length} ${STAGE_LABEL[stage]} inspector${list.length > 1 ? "s" : ""} in section ${mySection}.`
+    ? `${list.length} ${STAGE_LABEL[stage]} inspector${list.length > 1 ? "s" : ""} in the ${mySection} section.`
     : "Create an active staff account for this stage first, on the IS Staff page.";
 }
 function closeAssignModal() { document.getElementById("assignModal").classList.remove("show"); }

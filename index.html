@@ -196,7 +196,7 @@ button.submit::after{
     <div class="spot" id="spot"></div>
 
     <div class="top">
-      <div class="mark">IR-WORKSHOP / PL</div>
+      <div class="mark">DIMS</div>
       <div class="heading">
         <h1>DIMS - Digital Inspection Management System</h1>
         <p class="sub">Digital pre-inspection and final-inspection records for LHB coaches, in one place.</p>
@@ -376,7 +376,7 @@ function updateRoleLabel(){
     try { match = _db().users.find(x => x.login_id.toLowerCase() === id.toLowerCase()); } catch (e) {}
   }
   if (match) {
-    const sec = match.section_code ? ' · Section ' + match.section_code : '';
+    const sec = match.section_code ? ' · ' + sectionName(match.section_code) : '';
     roleLabel.textContent = match.is_management ? 'Management'
       : match.is_mgmt_staff ? 'SSE / HOD' + sec
       : 'Inspection Staff — ' + (STAGE_LABEL[match.inspection_stage] || match.inspection_stage || '—') + sec

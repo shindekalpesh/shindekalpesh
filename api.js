@@ -350,6 +350,24 @@ function requireAuth() {
 }
 function clearSession() { sessionStorage.removeItem(_SESSION_KEY); }
 
+// ── Sidebar brand ─────────────────────────────
+// Every signed-in page shows "DIMS - <section>" at the top of its sidebar (.rail .mark).
+// Runs after each page's own scripts, so requireAuth() has already settled who is signed in.
+// Full names for section codes; add a line here when a new section starts using DIMS
+const SECTION_FULL_NAMES = { TL: "Train Lighting" };
+const sectionName = code => SECTION_FULL_NAMES[code] || code;
+
+function brandText(user) {
+  if (!user) return "DIMS";
+  return "DIMS - " + (user.section_code ? sectionName(user.section_code) : (user.is_management ? "All sections" : "—"));
+}
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", () => {
+    const text = brandText(getUser());
+    document.querySelectorAll(".rail .mark").forEach(el => { el.textContent = text; });
+  });
+}
+
 // Helper: where does this user's role land after login?
 function homeFor(user) {
   if (!user) return LOGIN_PAGE;
@@ -634,7 +652,7 @@ function exportRows(base, title, head, rows, format) {
 function demoExport(format) {
   const db = _db(), me = getUser();
   const rows = db.visits.filter(v => _canSee(me, v))
-    .map(v => [v.coach_number, v.assigned_to_login || "—", v.assigned_to_name || "—", v.section_code || "—",
+    .map(v => [v.coach_number, v.assigned_to_login || "—", v.assigned_to_name || "—", v.section_code ? sectionName(v.section_code) : "—",
       STAGE_LABEL[v.inspection_phase] || "—", _TYPE_LABEL[v.coach_type] || v.coach_type,
       v.status === "SUBMITTED" ? "Submitted" : v.status === "ASSIGNED" ? "Not started" : "In progress",
       v.flagged_count, v.last_saved_on ? fmtDateTime(v.last_saved_on) : "—"]);

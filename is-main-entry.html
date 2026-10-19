@@ -120,7 +120,7 @@ input:disabled,select:disabled,textarea:disabled{background:var(--line-2);color:
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / TL</div>
+    <div class="mark">DIMS</div>
     <nav>
       <a href="#" id="homeLink">My assignments</a>
       <a href="critical-parameters.html">Critical Parameters</a>
@@ -391,7 +391,7 @@ function exportSection(i, format) {
 function exportSheet(format) {
   const rows = [];
   SECTIONS.forEach((name, i) => sectionRows(i).forEach(r => rows.push([name, ...r])));
-  const who = visit ? ` — ${staffLabel(visit.assigned_to_name, visit.assigned_to_login)}, Section ${visit.section_code || "—"}` : "";
+  const who = visit ? ` — ${staffLabel(visit.assigned_to_name, visit.assigned_to_login)}, ${visit.section_code ? sectionName(visit.section_code) + " section" : "no section"}` : "";
   exportRows(exportFileBase(coachNo, activePhase.id + "-sheet"), `Coach ${coachNo} — ${activePhase.label}${who}`,
     ["Section", "Parameter", "Spec / code", "Mission-critical", "Value"], rows, format);
 }
@@ -436,7 +436,7 @@ if (visit) {
   $("coachNo").textContent = "Coach " + visit.coach_number;
   $("coachType").textContent = (TYPE_NAMES[visit.coach_type] || visit.coach_type) + " · " + activePhase.label;
   document.title = "Main entry — Coach " + visit.coach_number;
-  $("assignee").innerHTML = `Inspector <strong>${esc(visit.assigned_to_name || "—")}</strong> · ${esc(visit.assigned_to_login || "—")}<br>Section ${esc(visit.section_code || "—")}`;
+  $("assignee").innerHTML = `Inspector <strong>${esc(visit.assigned_to_name || "—")}</strong> · ${esc(visit.assigned_to_login || "—")}<br>${visit.section_code ? esc(sectionName(visit.section_code)) + " section" : "No section"}`;
 
   // Restore saved values or fill demo data (pre-inspection only)
   if (visit.entry && visit.entry.length === panels.length) {

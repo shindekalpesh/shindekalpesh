@@ -85,7 +85,7 @@ td.remarks{font-size:13px;color:var(--ink2);max-width:240px;overflow-wrap:anywhe
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / PL</div>
+    <div class="mark">DIMS</div>
     <nav>
       <a href="sse-hod-summary.html">Summary</a>
       <a href="is-staff.html">IS Staff</a>
@@ -161,9 +161,9 @@ const user = getUser();
 if (!user?.is_mgmt_staff || user.is_management) location.replace(homeFor(user));
 
 const $ = id => document.getElementById(id);
-const mySection = user?.section_code || "—";
-$("userName").textContent = (user?.full_name || "SSE / HOD") + " · SSE / HOD · Section " + mySection;
-$("metaLine").textContent = `Section ${mySection} · Every coach handed from one inspector to another, and why`;
+const myCode = user?.section_code || "—", mySection = user?.section_code ? sectionName(user.section_code) : "—";   // code for file names, name for display
+$("userName").textContent = (user?.full_name || "SSE / HOD") + " · SSE / HOD · " + mySection;
+$("metaLine").textContent = `${mySection} section · Every coach handed from one inspector to another, and why`;
 
 const STAGE_COLOR  = { pre_inspection: "#2F6690", poh_or_modification: "#E8871E", final_inspection: "#2E7D4F" };
 const REASON_STYLE = {
@@ -265,7 +265,7 @@ $("exportMenu").onclick = e => {
   const rows = filtered().map(r => [new Date(r.reassigned_on).toLocaleString("en-IN"), r.coach_number, STAGE_LABEL[r.inspection_phase] || "—",
     r.from_login, r.from_name, r.to_login, r.to_name, REASSIGN_REASONS[r.reason] || r.reason, r.remarks || "",
     progressText(r), staffLabel(r.reassigned_by_name, r.reassigned_by_login)]);
-  exportRows(exportFileBase("section-" + mySection, "reassignment-log"), `Reassignment log — Section ${mySection}`, head, rows, b.dataset.f);
+  exportRows(exportFileBase("section-" + myCode, "reassignment-log"), `Reassignment log — ${mySection} section`, head, rows, b.dataset.f);
 };
 
 load();

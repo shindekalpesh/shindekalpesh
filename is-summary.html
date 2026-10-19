@@ -79,7 +79,7 @@ td.act .btn{padding:7px 16px}
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / PL</div>
+    <div class="mark">DIMS</div>
     <nav>
       <a class="active" href="is-summary.html">My assignments</a>
       <a href="critical-parameters.html">Critical Parameters</a>
@@ -134,7 +134,7 @@ requireAuth();
 const user = getUser();
 if (user?.is_mgmt_staff) location.replace(MGMT_HOME); // SSE / HOD accounts belong on their own page
 $("userName").textContent = (user?.full_name || user?.username || "Inspection Staff") + " · " + (user?.login_id || "IS");
-if (user) $("myLine").textContent = `Section ${user.section_code || "—"} · ${STAGE_LABEL[user.inspection_stage] || "—"} · `;
+if (user) $("myLine").textContent = `${user.section_code ? sectionName(user.section_code) + " section" : "No section"} · ${STAGE_LABEL[user.inspection_stage] || "—"} · `;
 
 let all = [], filter = "ALL";
 

@@ -109,7 +109,7 @@ td.act .btn{padding:6px 14px;font-size:13px}
 <body>
 <div class="shell">
   <aside class="rail">
-    <div class="mark">IR-WORKSHOP / PL</div>
+    <div class="mark">DIMS</div>
     <nav>
       <a href="sse-hod-summary.html">Summary</a>
       <a class="active" href="is-staff.html">IS Staff</a>
@@ -194,9 +194,9 @@ const user = getUser();
 if (!user?.is_mgmt_staff || user.is_management) location.replace(homeFor(user));
 
 const $ = id => document.getElementById(id);
-const mySection = user?.section_code || "—";
-$("userName").textContent = (user?.full_name || "SSE / HOD") + " · SSE / HOD · Section " + mySection;
-$("metaLine").textContent = `Section ${mySection} · Create and manage inspection staff accounts`;
+const myCode = user?.section_code || "—", mySection = user?.section_code ? sectionName(user.section_code) : "—";   // code for file names, name for display
+$("userName").textContent = (user?.full_name || "SSE / HOD") + " · SSE / HOD · " + mySection;
+$("metaLine").textContent = `${mySection} section · Create and manage inspection staff accounts`;
 
 const STAGE_COLOR = { pre_inspection: "#2F6690", poh_or_modification: "#E8871E", final_inspection: "#2E7D4F" };
 const stageTag = s => `<span class="stage" style="--c:${STAGE_COLOR[s] || "#7E8B98"}">${esc(STAGE_LABEL[s] || "—")}</span>`;
@@ -273,7 +273,7 @@ function render() {
       <td class="nm">${esc(s.full_name)}${isActive(s) ? "" : '<span class="pill pill-off">Deactivated</span>'}</td>
       <td class="contact">${esc(fmtContact(s.contact))}</td>
       <td class="email">${esc(s.email || "—")}</td>
-      <td><span class="sec">${esc(s.section_code || "—")}</span></td>
+      <td><span class="sec">${esc(s.section_code ? sectionName(s.section_code) : "—")}</span></td>
       <td>${stageTag(s.inspection_stage)}</td>
       <td>${assignmentsCell(s)}</td>
       <td class="nm">${esc(s.created_by_name || "System")}<span class="small">${esc(s.created_by_login || "")}</span></td>
@@ -344,11 +344,11 @@ $("exportMenu").onclick = e => {
   closeMenus();
   const head = ["ID", "Full name", "Contact", "Email", "Section", "Stage", "Status", "Active assignments",
     "Not started", "In progress", "Submitted", "Created by", "Created on"];
-  const rows = filtered().map(s => [s.login_id, s.full_name, fmtContact(s.contact), s.email, s.section_code,
+  const rows = filtered().map(s => [s.login_id, s.full_name, fmtContact(s.contact), s.email, sectionName(s.section_code),
     STAGE_LABEL[s.inspection_stage] || "—", isActive(s) ? "Active" : "Deactivated",
     s.current_assignments.active, s.current_assignments.not_started, s.current_assignments.in_progress, s.current_assignments.submitted,
     s.created_by_name ? staffLabel(s.created_by_name, s.created_by_login) : "System", fmtDate(s.created_on)]);
-  exportRows(exportFileBase("section-" + mySection, "is-staff"), `IS staff — Section ${mySection}`, head, rows, b.dataset.f);
+  exportRows(exportFileBase("section-" + myCode, "is-staff"), `IS staff — ${mySection} section`, head, rows, b.dataset.f);
 };
 
 load();
